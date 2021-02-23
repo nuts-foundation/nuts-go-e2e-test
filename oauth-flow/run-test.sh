@@ -7,10 +7,6 @@ echo "------------------------------------"
 docker-compose down
 docker-compose rm -f -v
 rm -rf ./node-*/data
-rm -rf ./common/data
-mkdir -p ./node-A/data/keys
-mkdir -p ./node-B/data/keys
-touch ./node-A/data/keys/truststore.pem
 
 echo "------------------------------------"
 echo "Starting Docker containers..."
@@ -23,61 +19,41 @@ echo "------------------------------------"
 echo "Registering vendors..."
 echo "------------------------------------"
 # Register Vendor A
-docker-compose exec -e NUTS_MODE=cli nodeA-backend nuts crypto selfsign-vendor-cert "Vendor A" /opt/nuts/keys/vendor_certificate.pem
-docker-compose exec -e NUTS_MODE=cli nodeA-backend nuts registry register-vendor /opt/nuts/keys/vendor_certificate.pem
+VENDOR_A_DIDDOC=$(docker-compose exec nodeA-backend nuts vdr create-did)
+VENDOR_A_DID=$(echo $VENDOR_A_DIDDOC | jq -r .id)
+echo Vendor A DID: $VENDOR_A_DID
+# Add endpoint
+VENDOR_A_DIDDOC=$(echo $VENDOR_A_DIDDOC | jq ". |= . + {service: [{id:\"${VENDOR_A_DID}#oauth\",type:\"oauth\",serviceEndpoint:\"https://nodeA:443/auth/accesstoken\"}]}")
+# Add assertionMethod
+VENDOR_A_KEYID=$(echo $VENDOR_A_DIDDOC | jq -r '.verificationMethod[0].id')
+VENDOR_A_DIDDOC=$(echo $VENDOR_A_DIDDOC | jq ". |= . + {assertionMethod: [\"${VENDOR_A_KEYID}\"]}")
+# Perform update
+echo $VENDOR_A_DIDDOC > ./node-A/data/updated-did.json
+DIDDOC_HASH=$(docker-compose exec nodeA-backend nuts vdr resolve $VENDOR_A_DID --metadata | jq -r .hash)
+docker-compose exec nodeA-backend nuts vdr update "${VENDOR_A_DID}" "${DIDDOC_HASH}" /opt/nuts/data/updated-did.json
 
 # Register Vendor B
-docker-compose exec -e NUTS_MODE=cli nodeB nuts crypto selfsign-vendor-cert "Vendor B" /opt/nuts/keys/vendor_certificate.pem
-docker-compose exec -e NUTS_MODE=cli nodeB nuts registry register-vendor /opt/nuts/keys/vendor_certificate.pem
+VENDOR_B_DIDDOC=$(docker-compose exec nodeB nuts vdr create-did)
+VENDOR_B_DID=$(echo $VENDOR_B_DIDDOC | jq -r .id)
+echo Vendor B DID: $VENDOR_B_DID
+# Add assertionMethod
+VENDOR_B_KEYID=$(echo $VENDOR_B_DIDDOC | jq -r '.verificationMethod[0].id')
+VENDOR_B_DIDDOC=$(echo $VENDOR_B_DIDDOC | jq ". |= . + {assertionMethod: [\"${VENDOR_B_KEYID}\"]}")
+# Perform update
+echo $VENDOR_B_DIDDOC > ./node-B/data/updated-did.json
+DIDDOC_HASH=$(docker-compose exec nodeB nuts vdr resolve $VENDOR_B_DID --metadata | jq -r .hash)
+docker-compose exec nodeB nuts vdr update "${VENDOR_B_DID}" "${DIDDOC_HASH}" /opt/nuts/data/updated-did.json
 
-# Since node B connects to A's gRPC server, so A needs to trust B's Vendor CA certificate since it's used to issue the client certificate
-docker cp ./node-B/data/keys/vendor_certificate.pem $(docker-compose ps -q nodeA):/etc/nginx/ssl/truststore.pem
-# This also means that B must trust A's server certificate (by trusting our custom Root CA)
-docker cp ../keys/ca-certificate.pem $(docker-compose ps -q nodeB):/usr/local/share/ca-certificates/rootca.crt
-docker-compose exec nodeB update-ca-certificates
-
-docker-compose restart
-
-echo "------------------------------------"
-echo "Waiting for services to restart..."
-echo "------------------------------------"
-waitForDCService nodeA-backend
-waitForDCService nodeB
-
-echo "------------------------------------"
-echo "Registering care organizations..."
-echo "Registering endpoints..."
-echo "------------------------------------"
-
-docker-compose exec -e NUTS_MODE=cli nodeA-backend nuts registry vendor-claim urn:oid:2.16.840.1.113883.2.4.6.1:A "Org A"
-docker-compose exec -e NUTS_MODE=cli nodeB nuts registry vendor-claim urn:oid:2.16.840.1.113883.2.4.6.1:B "Org B"
-docker-compose exec -e NUTS_MODE=cli nodeA-backend nuts registry register-endpoint urn:oid:2.16.840.1.113883.2.4.6.1:A oauth "https://nodeA:443/auth/accesstoken"
-
-# Wait for Nuts Network nodes to build connections
-sleep 5
-
-echo "------------------------------------"
-echo "Obtain client certificate..."
-echo "------------------------------------"
-# Generate TLS keys for node-B
-openssl ecparam -name prime256v1 -genkey -noout -out ./node-B/data/keys/tls-privatekey.pem
-openssl ec -in ./node-B/data/keys/tls-privatekey.pem -pubout -out ./node-B/data/keys/tls-publickey.pem
-
-# Get a client certificate from B
-curl -X POST -s --data-binary "@./node-B/data/keys/tls-publickey.pem" http://localhost:21323/crypto/certificate/tls > ./node-B/data/keys/tls-certificate.pem
-if grep -q "BEGIN CERTIFICATE" ./node-B/data/keys/tls-certificate.pem; then
-  echo "TLS client certificate stored in ./node-B/data/keys/tls-certificate.pem"
-else
-  echo "FAILED: Could not get TLS client certificate from node-B" 1>&2
-  cat ./node-B/data/keys/tls-certificate.pem
-  exit 1
-fi
+echo Waiting 2 seconds for updates to be propagated on the network...
+sleep 2
 
 echo "------------------------------------"
 echo "Sign contract..."
 echo "------------------------------------"
+
 # draw up a contract
-RESPONSE=$(curl -X PUT -s --data-binary "@./node-B/drawupcontractrequest.json" http://localhost:21323/internal/auth/experimental/contract/drawup -H "Content-Type:application/json")
+REQUEST="{\"type\": \"PractitionerLogin\",\"language\": \"EN\",\"version\": \"v3\",\"legalEntity\": \"${VENDOR_B_DID}\"}"
+RESPONSE=$(echo $REQUEST | curl -X PUT --data-binary @- http://localhost:21323/internal/auth/experimental/contract/drawup -H "Content-Type:application/json")
 if echo $RESPONSE | grep -q "PractitionerLogin"; then
   echo $RESPONSE | sed -E 's/.*"message":"([^"]*).*/\1/' > ./node-B/data/contract.txt
   echo "Contract stored in ./node-B/data/contract.txt"
@@ -134,8 +110,10 @@ echo "------------------------------------"
 echo "Perform OAuth 2.0 flow..."
 echo "------------------------------------"
 # Create JWT bearer token
-sed "s/BASE64_VP/$(cat ./node-B/data/vp.txt)/" ./node-B/jwtbearertokentemplate.json > ./node-B/data/jwtbearertoken.json
-RESPONSE=$(curl -X POST -s --data-binary "@./node-B/data/jwtbearertoken.json" http://localhost:21323/auth/jwtbearertoken -H "Content-Type:application/json")
+VP=$(cat ./node-B/data/vp.txt)
+REQUEST="{\"custodian\":\"${VENDOR_A_DID}\",\"actor\":\"${VENDOR_B_DID}\",\"identity\":\"${VP}\",\"scope\":\"nuts\"}"
+RESPONSE=$(echo $REQUEST | curl -X POST -s --data-binary @- http://localhost:21323/auth/jwtbearertoken -H "Content-Type:application/json")
+echo $RESPONSE
 if echo $RESPONSE | grep -q "bearer_token"; then
   echo $RESPONSE | sed -E 's/.*"bearer_token":"([^"]*).*/\1/' > ./node-B/data/bearertoken.txt
   echo "bearer token stored in ./node-B/data/bearertoken.txt"
@@ -146,8 +124,7 @@ else
 fi
 
 # Offer bearer token to Node A
-# sed "s/BASE64_BT/$(cat ./node-B/data/bearertoken.txt)/" ./node-B/accesstokentemplate.json > ./node-B/data/accesstoken.json
-RESPONSE=$(docker-compose exec nodeB curl -X POST -s -F "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer" -F "assertion=$(cat ./node-B/data/bearertoken.txt)" --cert /opt/nuts/keys/tls-certificate.pem --key /opt/nuts/keys/tls-privatekey.pem https://nodeA:443/auth/accesstoken)
+RESPONSE=$(docker-compose exec nodeB curl -X POST --insecure -s -F "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer" -F "assertion=$(cat ./node-B/data/bearertoken.txt)" --cert /opt/nuts/certificate-and-key.pem --key /opt/nuts/certificate-and-key.pem https://nodeA:443/auth/accesstoken)
 if echo $RESPONSE | grep -q "access_token"; then
   echo $RESPONSE | sed -E 's/.*"access_token":"([^"]*).*/\1/' > ./node-B/data/accesstoken.txt
   echo "access token stored in ./node-B/data/accesstoken.txt"
@@ -161,7 +138,7 @@ echo "------------------------------------"
 echo "Retrieving data..."
 echo "------------------------------------"
 
-RESPONSE=$(docker-compose exec nodeB curl --cert /opt/nuts/keys/tls-certificate.pem --key /opt/nuts/keys/tls-privatekey.pem https://nodeA:443/ping -H "Authorization: bearer $(cat ./node-B/data/accesstoken.txt)" -v)
+RESPONSE=$(docker-compose exec nodeB curl --insecure --cert /opt/nuts/certificate-and-key.pem --key /opt/nuts/certificate-and-key.pem https://nodeA:443/ping -H "Authorization: bearer $(cat ./node-B/data/accesstoken.txt)" -v)
 if echo $RESPONSE | grep -q "pong"; then
   echo "success!"
 else

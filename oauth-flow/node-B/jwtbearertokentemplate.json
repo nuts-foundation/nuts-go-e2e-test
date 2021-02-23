@@ -1,6 +1,6 @@
 {
-  "custodian": "urn:oid:2.16.840.1.113883.2.4.6.1:A",
-  "actor": "urn:oid:2.16.840.1.113883.2.4.6.1:B",
+  "custodian": "CUSTODIAN_ID",
+  "actor": "ACTOR_ID",
   "identity": "BASE64_VP",
   "scope": "nuts"
 }
