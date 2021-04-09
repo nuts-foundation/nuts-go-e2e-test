@@ -4,13 +4,13 @@ http:
   default:
     address: :1323
 auth:
-  publicUrl: http://node-b
-  contractValidators:
+  publicurl: http://node-b
+  contractvalidators:
     - dummy
   irma:
-    autoUpdateSchemas: false
+    autoupdateschemas: false
 network:
-  trustStoreFile: /opt/nuts/truststore.pem
-  certFile: /opt/nuts/certificate-and-key.pem
-  certKeyFile: /opt/nuts/certificate-and-key.pem
-  bootstrapNodes: nodeA-backend:5555
+  truststorefile: /opt/nuts/truststore.pem
+  certfile: /opt/nuts/certificate-and-key.pem
+  certkeyfile: /opt/nuts/certificate-and-key.pem
+  bootstrapnodes: nodeA-backend:5555

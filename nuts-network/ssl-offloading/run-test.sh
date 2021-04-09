@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 source ../../util.sh
 
+echo "TEST DISABLED: CURRENTLY NOT SUPPORTED"
+exit 0
+
 echo "------------------------------------"
 echo "Cleaning up running Docker containers and volumes, and key material..."
 echo "------------------------------------"

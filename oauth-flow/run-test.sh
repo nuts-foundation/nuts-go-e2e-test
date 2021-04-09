@@ -44,6 +44,22 @@ echo $VENDOR_B_DIDDOC > ./node-B/data/updated-did.json
 DIDDOC_HASH=$(docker-compose exec nodeB nuts vdr resolve $VENDOR_B_DID --metadata | jq -r .hash)
 docker-compose exec nodeB nuts vdr update "${VENDOR_B_DID}" "${DIDDOC_HASH}" /opt/nuts/data/updated-did.json
 
+# Issue NutsOrganizationCredential for Vendor B
+REQUEST="{\"type\":\"NutsOrganizationCredential\",\"issuer\":\"${VENDOR_B_DID}\", \"credentialSubject\": {\"id\":\"${VENDOR_B_DID}\", \"organization\":{\"name\":\"Caresoft B.V.\", \"city\":\"Caretown\"}}}"
+RESPONSE=$(echo $REQUEST | curl -X POST --data-binary @- http://localhost:21323/internal/vcr/v1/vc -H "Content-Type:application/json")
+if echo $RESPONSE | grep -q "VerifiableCredential"; then
+  echo "VC issued"
+else
+  echo "FAILED: Could not issue NutsOrganizationCredential to node-B" 1>&2
+  echo $RESPONSE
+  exit 1
+fi
+
+# Vendor A must trust 'NutsOrganizationCredential's from Vendor B
+docker-compose exec nodeA-backend nuts vcr trust "NutsOrganizationCredential" "${VENDOR_B_DID}"
+# Vendor B must trust its own 'NutsOrganizationCredential's since it's self-issued
+docker-compose exec nodeB nuts vcr trust "NutsOrganizationCredential" "${VENDOR_B_DID}"
+
 echo Waiting 2 seconds for updates to be propagated on the network...
 sleep 2
 
@@ -53,7 +69,7 @@ echo "------------------------------------"
 
 # draw up a contract
 REQUEST="{\"type\": \"PractitionerLogin\",\"language\": \"EN\",\"version\": \"v3\",\"legalEntity\": \"${VENDOR_B_DID}\"}"
-RESPONSE=$(echo $REQUEST | curl -X PUT --data-binary @- http://localhost:21323/internal/auth/experimental/contract/drawup -H "Content-Type:application/json")
+RESPONSE=$(echo $REQUEST | curl -X PUT --data-binary @- http://localhost:21323/internal/auth/v1/contract/drawup -H "Content-Type:application/json")
 if echo $RESPONSE | grep -q "PractitionerLogin"; then
   echo $RESPONSE | sed -E 's/.*"message":"([^"]*).*/\1/' > ./node-B/data/contract.txt
   echo "Contract stored in ./node-B/data/contract.txt"
@@ -65,7 +81,7 @@ fi
 
 # sign the contract with dummy means
 sed "s/BASE64_CONTRACT/$(cat ./node-B/data/contract.txt)/" ./node-B/createsigningsessionrequesttemplate.json > ./node-B/data/createsigningsessionrequest.json
-RESPONSE=$(curl -X POST -s --data-binary "@./node-B/data/createsigningsessionrequest.json" http://localhost:21323/internal/auth/experimental/signature/session -H "Content-Type:application/json")
+RESPONSE=$(curl -X POST -s --data-binary "@./node-B/data/createsigningsessionrequest.json" http://localhost:21323/internal/auth/v1/signature/session -H "Content-Type:application/json")
 if echo $RESPONSE | grep -q "sessionPtr"; then
   SESSION=$(echo $RESPONSE | sed -E 's/.*"sessionID":"([^"]*).*/\1/')
   echo $SESSION
@@ -76,7 +92,7 @@ else
 fi
 
 # poll once for status created
-RESPONSE=$(curl "http://localhost:21323/internal/auth/experimental/signature/session/$SESSION")
+RESPONSE=$(curl "http://localhost:21323/internal/auth/v1/signature/session/$SESSION")
 if echo $RESPONSE | grep -q "created"; then
   echo $RESPONSE
 else
@@ -86,7 +102,7 @@ else
 fi
 
 # poll twice for status success
-RESPONSE=$(curl "http://localhost:21323/internal/auth/experimental/signature/session/$SESSION")
+RESPONSE=$(curl "http://localhost:21323/internal/auth/v1/signature/session/$SESSION")
 if echo $RESPONSE | grep -q "in-progress"; then
   echo $RESPONSE
 else
@@ -96,7 +112,7 @@ else
 fi
 
 # poll three times for status completed
-RESPONSE=$(curl "http://localhost:21323/internal/auth/experimental/signature/session/$SESSION")
+RESPONSE=$(curl "http://localhost:21323/internal/auth/v1/signature/session/$SESSION")
 if echo $RESPONSE | grep -q "completed"; then
   echo $RESPONSE | sed -E 's/.*"verifiablePresentation":(.*\]}).*/\1/' | base64 > ./node-B/data/vp.txt
   echo "VP stored in ./node-B/data/vp.txt"
@@ -112,7 +128,7 @@ echo "------------------------------------"
 # Create JWT bearer token
 VP=$(cat ./node-B/data/vp.txt)
 REQUEST="{\"custodian\":\"${VENDOR_A_DID}\",\"actor\":\"${VENDOR_B_DID}\",\"identity\":\"${VP}\",\"scope\":\"nuts\"}"
-RESPONSE=$(echo $REQUEST | curl -X POST -s --data-binary @- http://localhost:21323/auth/jwtbearertoken -H "Content-Type:application/json")
+RESPONSE=$(echo $REQUEST | curl -X POST -s --data-binary @- http://localhost:21323/internal/auth/v1/bearertoken -H "Content-Type:application/json")
 echo $RESPONSE
 if echo $RESPONSE | grep -q "bearer_token"; then
   echo $RESPONSE | sed -E 's/.*"bearer_token":"([^"]*).*/\1/' > ./node-B/data/bearertoken.txt
@@ -124,7 +140,7 @@ else
 fi
 
 # Offer bearer token to Node A
-RESPONSE=$(docker-compose exec nodeB curl -X POST --insecure -s -F "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer" -F "assertion=$(cat ./node-B/data/bearertoken.txt)" --cert /opt/nuts/certificate-and-key.pem --key /opt/nuts/certificate-and-key.pem https://nodeA:443/auth/accesstoken)
+RESPONSE=$(docker-compose exec nodeB curl -X POST --insecure -s -F "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer" -F "assertion=$(cat ./node-B/data/bearertoken.txt)" --cert /opt/nuts/certificate-and-key.pem --key /opt/nuts/certificate-and-key.pem https://nodeA:443/public/auth/v1/accesstoken)
 if echo $RESPONSE | grep -q "access_token"; then
   echo $RESPONSE | sed -E 's/.*"access_token":"([^"]*).*/\1/' > ./node-B/data/accesstoken.txt
   echo "access token stored in ./node-B/data/accesstoken.txt"

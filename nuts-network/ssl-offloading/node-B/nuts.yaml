@@ -3,15 +3,15 @@ http:
   default:
     address: :1323
 auth:
-  publicUrl: http://node-B
-  contractValidators:
+  publicurl: http://node-B
+  contractvalidators:
     - dummy
   irma:
-    autoUpdateSchemas: false
+    autoupdateschemas: false
 network:
-  bootstrapNodes: nodeA:443
-  publicAddr: nodeB:5555
-  grpcAddr:	:5555
-  trustStoreFile: /opt/nuts/truststore.pem
-  certFile: /opt/nuts/certificate-and-key.pem
-  certKeyFile: /opt/nuts/certificate-and-key.pem
+  bootstrapnodes: nodeA:443
+  publicaddr: nodeB:5555
+  grpcaddr:	:5555
+  truststorefile: /opt/nuts/truststore.pem
+  certfile: /opt/nuts/certificate-and-key.pem
+  certfeyFile: /opt/nuts/certificate-and-key.pem
