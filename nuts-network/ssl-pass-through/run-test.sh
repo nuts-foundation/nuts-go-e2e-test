@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-echo This test is not implemented!
+echo "TEST DISABLED: CURRENTLY NOT SUPPORTED"
+exit 0

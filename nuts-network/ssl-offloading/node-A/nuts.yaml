@@ -3,16 +3,13 @@ http:
   default:
     address: :1323
 auth:
-  publicUrl: http://node-A
-  contractValidators:
+  publicurl: http://node-A
+  contractvalidators:
     - dummy
   irma:
-    autoUpdateSchemas: false
+    autoupdateschemas: false
 network:
-  publicAddr: nodeA:5555
-  grpcAddr:	:5555
+  publicaddr: nodeA:5555
+  grpcaddr:	:5555
   # Because the proxy is offloading TLS for this node, enableTLS=false and trustStoreFile is not configured:
-  enableTLS: false
-  # However, we do need certFile and certKeyFile for outgoing TLS connections:
-  certFile: /opt/nuts/certificate-and-key.pem
-  certKeyFile: /opt/nuts/certificate-and-key.pem
+  enabletls: false
