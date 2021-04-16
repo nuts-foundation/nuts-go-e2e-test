@@ -22,8 +22,8 @@ echo "------------------------------------"
 VENDOR_A_DIDDOC=$(docker-compose exec nodeA-backend nuts vdr create-did)
 VENDOR_A_DID=$(echo $VENDOR_A_DIDDOC | jq -r .id)
 echo Vendor A DID: $VENDOR_A_DID
-# Add endpoint
-VENDOR_A_DIDDOC=$(echo $VENDOR_A_DIDDOC | jq ". |= . + {service: [{id:\"${VENDOR_A_DID}#oauth\",type:\"oauth\",serviceEndpoint:\"https://nodeA:443/auth/accesstoken\"}]}")
+# Add endpoint and service
+VENDOR_A_DIDDOC=$(echo $VENDOR_A_DIDDOC | jq ". |= . + {service: [{id:\"${VENDOR_A_DID}#oauth\",type:\"oauth\",serviceEndpoint:\"https://nodeA:443/auth/accesstoken\"}, {id:\"${VENDOR_A_DID}#1\",type:\"test\",serviceEndpoint: {oauth:\"${VENDOR_A_DID}?type=oauth\"}}]}")
 # Add assertionMethod
 VENDOR_A_KEYID=$(echo $VENDOR_A_DIDDOC | jq -r '.verificationMethod[0].id')
 VENDOR_A_DIDDOC=$(echo $VENDOR_A_DIDDOC | jq ". |= . + {assertionMethod: [\"${VENDOR_A_KEYID}\"]}")
@@ -127,7 +127,7 @@ echo "Perform OAuth 2.0 flow..."
 echo "------------------------------------"
 # Create JWT bearer token
 VP=$(cat ./node-B/data/vp.txt)
-REQUEST="{\"custodian\":\"${VENDOR_A_DID}\",\"actor\":\"${VENDOR_B_DID}\",\"identity\":\"${VP}\",\"scope\":\"nuts\"}"
+REQUEST="{\"custodian\":\"${VENDOR_A_DID}\",\"actor\":\"${VENDOR_B_DID}\",\"identity\":\"${VP}\",\"service\":\"test\"}"
 RESPONSE=$(echo $REQUEST | curl -X POST -s --data-binary @- http://localhost:21323/internal/auth/v1/bearertoken -H "Content-Type:application/json")
 echo $RESPONSE
 if echo $RESPONSE | grep -q "bearer_token"; then
