@@ -140,7 +140,7 @@ else
 fi
 
 # Offer bearer token to Node A
-RESPONSE=$(docker-compose exec nodeB curl -X POST --insecure -s -F "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer" -F "assertion=$(cat ./node-B/data/bearertoken.txt)" --cert /opt/nuts/certificate-and-key.pem --key /opt/nuts/certificate-and-key.pem https://nodeA:443/public/auth/v1/accesstoken)
+RESPONSE=$(docker-compose exec nodeB curl -X POST --insecure -s -F "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer" -F "assertion=$(cat ./node-B/data/bearertoken.txt)" --cert /opt/nuts/certificate-and-key.pem --key /opt/nuts/certificate-and-key.pem https://nodeA:443/n2n/auth/v1/accesstoken)
 if echo $RESPONSE | grep -q "access_token"; then
   echo $RESPONSE | sed -E 's/.*"access_token":"([^"]*).*/\1/' > ./node-B/data/accesstoken.txt
   echo "access token stored in ./node-B/data/accesstoken.txt"
