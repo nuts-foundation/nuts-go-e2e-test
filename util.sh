@@ -2,7 +2,7 @@
 
 function waitForDCService {
   SERVICE_NAME=$1
-  printf "Waiting for Docker Compose service '%s' to become healthy" $SERVICE_NAME
+  printf "Waiting for docker-compose service '%s' to become healthy" $SERVICE_NAME
   retry=0
   healthy=0
   while [ $retry -lt 30 ]; do
