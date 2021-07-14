@@ -5,6 +5,16 @@ COPY . /tests
 RUN apt-get update && \
     apt-get install -y jq
 
+nuts-node:
+    COPY /nuts-node/ /nuts-node/
+    WORKDIR /nuts-node
+
+    RUN ls -lisah .
+
+    FROM DOCKERFILE .
+
+    SAVE IMAGE nuts-node
+
 network-direct-wan:
     WORKDIR /tests/nuts-network/direct-wan
 
