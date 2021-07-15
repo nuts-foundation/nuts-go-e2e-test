@@ -128,7 +128,7 @@ echo "------------------------------------"
 # Create JWT bearer token
 VP=$(cat ./node-B/data/vp.txt)
 REQUEST="{\"custodian\":\"${VENDOR_A_DID}\",\"actor\":\"${VENDOR_B_DID}\",\"identity\":\"${VP}\",\"service\":\"test\"}"
-RESPONSE=$(echo $REQUEST | curl -X POST -s --data-binary @- http://localhost:21323/internal/auth/v1/bearertoken -H "Content-Type:application/json")
+RESPONSE=$(echo $REQUEST | curl -X POST -s --data-binary @- http://localhost:21323/internal/auth/v1/jwt-grant -H "Content-Type:application/json")
 echo $RESPONSE
 if echo $RESPONSE | grep -q "bearer_token"; then
   echo $RESPONSE | sed -E 's/.*"bearer_token":"([^"]*).*/\1/' > ./node-B/data/bearertoken.txt
