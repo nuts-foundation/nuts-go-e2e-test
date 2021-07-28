@@ -4,6 +4,7 @@ http:
   default:
     address: :1323
 auth:
+  tlsenabled: true
   publicurl: http://node-b
   contractvalidators:
     - dummy
