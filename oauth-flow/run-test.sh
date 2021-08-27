@@ -23,7 +23,7 @@ VENDOR_A_DIDDOC=$(docker-compose exec nodeA-backend nuts vdr create-did)
 VENDOR_A_DID=$(echo $VENDOR_A_DIDDOC | jq -r .id)
 echo Vendor A DID: $VENDOR_A_DID
 # Add endpoint and service
-VENDOR_A_DIDDOC=$(echo $VENDOR_A_DIDDOC | jq ". |= . + {service: [{id:\"${VENDOR_A_DID}#oauth\",type:\"oauth\",serviceEndpoint:\"https://nodeA:443/n2n/auth/v1/accesstoken\"}, {id:\"${VENDOR_A_DID}#1\",type:\"test\",serviceEndpoint: {oauth:\"${VENDOR_A_DID}?type=oauth\"}}]}")
+VENDOR_A_DIDDOC=$(echo $VENDOR_A_DIDDOC | jq ". |= . + {service: [{id:\"${VENDOR_A_DID}#oauth\",type:\"oauth\",serviceEndpoint:\"https://nodeA:443/n2n/auth/v1/accesstoken\"}, {id:\"${VENDOR_A_DID}#1\",type:\"test\",serviceEndpoint: {oauth:\"${VENDOR_A_DID}/serviceEndpoint?type=oauth\"}}]}")
 # Add assertionMethod
 VENDOR_A_KEYID=$(echo $VENDOR_A_DIDDOC | jq -r '.verificationMethod[0].id')
 VENDOR_A_DIDDOC=$(echo $VENDOR_A_DIDDOC | jq ". |= . + {assertionMethod: [\"${VENDOR_A_KEYID}\"]}")
