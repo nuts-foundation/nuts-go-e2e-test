@@ -1,6 +1,6 @@
 {
-  "custodian": "CUSTODIAN_ID",
-  "actor": "ACTOR_ID",
+  "requester": "REQUESTER_ID",
+  "authorizer": "AUTHORIZER_ID",
   "identity": "BASE64_VP",
   "scope": "nuts"
 }
