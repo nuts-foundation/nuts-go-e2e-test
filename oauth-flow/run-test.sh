@@ -127,7 +127,7 @@ echo "Perform OAuth 2.0 flow..."
 echo "------------------------------------"
 # Create JWT bearer token
 VP=$(cat ./node-B/data/vp.txt)
-REQUEST="{\"requester\":\"${VENDOR_A_DID}\",\"authorizer\":\"${VENDOR_B_DID}\",\"identity\":\"${VP}\",\"service\":\"test\"}"
+REQUEST="{\"authorizer\":\"${VENDOR_A_DID}\",\"requester\":\"${VENDOR_B_DID}\",\"identity\":\"${VP}\",\"service\":\"test\"}"
 RESPONSE=$(echo $REQUEST | curl -X POST -s --data-binary @- http://localhost:21323/internal/auth/v1/request-access-token -H "Content-Type:application/json" -v)
 if echo $RESPONSE | grep -q "access_token"; then
   echo $RESPONSE | sed -E 's/.*"access_token":"([^"]*).*/\1/' > ./node-B/data/accesstoken.txt
