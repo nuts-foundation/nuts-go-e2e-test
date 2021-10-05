@@ -1,6 +1,6 @@
 {
-  "requester": "REQUESTER_ID",
   "authorizer": "AUTHORIZER_ID",
+  "requester": "REQUESTER_ID",
   "identity": "BASE64_VP",
   "scope": "nuts"
 }
