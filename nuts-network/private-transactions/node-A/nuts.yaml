@@ -12,6 +12,8 @@ auth:
 vcr:
   overrideissueallpublic: false
 network:
+  v1:
+    adverthashesinterval: 250
   publicaddr: nodeA:5555
   grpcaddr:	:5555
   truststorefile: /opt/nuts/truststore.pem
