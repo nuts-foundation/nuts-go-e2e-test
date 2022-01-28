@@ -1,0 +1,21 @@
+verbosity: debug
+datadir: /opt/nuts/data
+http:
+  default:
+    address: :1323
+auth:
+  publicurl: http://node-A
+  contractvalidators:
+    - dummy
+  irma:
+    autoupdateschemas: false
+vcr:
+  overrideissueallpublic: false
+network:
+  v1:
+    adverthashesinterval: 250
+  publicaddr: nodeA:5555
+  grpcaddr:	:5555
+  truststorefile: /opt/nuts/truststore.pem
+  certfile: /opt/nuts/certificate-and-key.pem
+  certkeyfile: /opt/nuts/certificate-and-key.pem
