@@ -11,7 +11,7 @@ network-direct-wan:
     WITH DOCKER \
         --compose docker-compose.yml
         RUN ./run-test.sh
-    END \
+    END
 
 private-transactions-prepare:
     WORKDIR /tests/nuts-network/private-transactions
@@ -28,7 +28,7 @@ private-transactions:
     WITH DOCKER \
         --compose docker-compose.yml
         RUN ./run-test.sh
-    END \
+    END
 
 network-ssloffloading:
     WORKDIR /tests/nuts-network/ssl-offloading
