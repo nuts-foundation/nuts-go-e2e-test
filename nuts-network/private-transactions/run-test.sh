@@ -66,7 +66,7 @@ if [ $(searchAuthCredentials "http://localhost:11323" | jq "length") -ne 2 ]; th
 fi
 
 if [ $(searchAuthCredentials "http://localhost:21323" | jq "length") -ne 2 ]; then
-  echo "failed to find NutsAuthorizationCredentials on Node-A"
+  echo "failed to find NutsAuthorizationCredentials on Node-B"
   exit 1
 fi
 

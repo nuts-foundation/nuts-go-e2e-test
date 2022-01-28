@@ -7,6 +7,7 @@ source ../../util.sh
 function setupNode() {
   local did=$(printf '{
     "selfControl": true,
+    "keyAgreement": true,
     "assertionMethod": true,
     "capabilityInvocation": true
   }' | curl -s -X POST "$1/internal/vdr/v1/did" -H "Content-Type: application/json" --data-binary @- | jq -r ".id")
