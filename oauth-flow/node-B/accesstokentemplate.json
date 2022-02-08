@@ -1,4 +1,0 @@
-{
-  "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
-  "assertion": "BASE64_BT"
-}
