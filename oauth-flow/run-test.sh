@@ -114,7 +114,7 @@ fi
 # poll three times for status completed
 RESPONSE=$(curl "http://localhost:21323/internal/auth/v1/signature/session/$SESSION")
 if echo $RESPONSE | grep -q "completed"; then
-  echo $RESPONSE | sed -E 's/.*"verifiablePresentation":(.*\]}).*/\1/' | base64 -w 0 > ./node-B/data/vp.txt
+  echo $RESPONSE | sed -E 's/.*"verifiablePresentation":(.*\]}).*/\1/' > ./node-B/data/vp.txt
   echo "VP stored in ./node-B/data/vp.txt"
 else
   echo "FAILED: Could not get session status from node-B" 1>&2
@@ -127,7 +127,7 @@ echo "Perform OAuth 2.0 flow..."
 echo "------------------------------------"
 # Create JWT bearer token
 VP=$(cat ./node-B/data/vp.txt)
-REQUEST="{\"authorizer\":\"${VENDOR_A_DID}\",\"requester\":\"${VENDOR_B_DID}\",\"identity\":\"${VP}\",\"service\":\"test\"}"
+REQUEST="{\"authorizer\":\"${VENDOR_A_DID}\",\"requester\":\"${VENDOR_B_DID}\",\"identity\":${VP},\"service\":\"test\"}"
 RESPONSE=$(echo $REQUEST | curl -X POST -s --data-binary @- http://localhost:21323/internal/auth/v1/request-access-token -H "Content-Type:application/json" -v)
 if echo $RESPONSE | grep -q "access_token"; then
   echo $RESPONSE | sed -E 's/.*"access_token":"([^"]*).*/\1/' > ./node-B/data/accesstoken.txt
