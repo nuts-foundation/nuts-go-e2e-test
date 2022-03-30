@@ -20,17 +20,24 @@ function createAuthCredential() {
       "resources": [],
       "purposeOfUse": "example",
       "subject": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780"
-    }
-  }' "$2" "$3" | curl -s -X POST "$1/internal/vcr/v1/vc" -H "Content-Type: application/json" --data-binary @- > /dev/null
+    },
+   "visibility": "private"
+  }' "$2" "$3" | curl -s -X POST "$1/internal/vcr/v2/issuer/vc" -H "Content-Type: application/json" --data-binary @- > /dev/null
 }
 
 function searchAuthCredentials() {
   printf '{
-    "params": [{
-      "key": "credentialSubject.subject",
-      "value": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780"
-    }]
-  }' | curl -s -X POST "$1/internal/vcr/v1/authorization?untrusted=true" -H "Content-Type: application/json" --data-binary @-
+    "query": {
+      "@context": ["https://www.w3.org/2018/credentials/v1", "https://nuts.nl/credentials/v1"],
+      "type": ["VerifiableCredential" ,"NutsAuthorizationCredential"],
+      "credentialSubject": {
+        "subject": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780"
+      }
+    },
+    "searchOptions": {
+       "allowUntrustedIssuer": true
+    }
+  }' | curl -s -X POST "$1/internal/vcr/v2/search" -H "Content-Type: application/json" --data-binary @-
 }
 
 echo "------------------------------------"
@@ -73,4 +80,4 @@ fi
 echo "------------------------------------"
 echo "Stopping Docker containers..."
 echo "------------------------------------"
-docker-compose stop
+#docker-compose stop
