@@ -45,8 +45,8 @@ DIDDOC_HASH=$(docker-compose exec nodeB nuts vdr resolve $VENDOR_B_DID --metadat
 docker-compose exec nodeB nuts vdr update "${VENDOR_B_DID}" "${DIDDOC_HASH}" /opt/nuts/data/updated-did.json
 
 # Issue NutsOrganizationCredential for Vendor B
-REQUEST="{\"type\":\"NutsOrganizationCredential\",\"issuer\":\"${VENDOR_B_DID}\", \"credentialSubject\": {\"id\":\"${VENDOR_B_DID}\", \"organization\":{\"name\":\"Caresoft B.V.\", \"city\":\"Caretown\"}}}"
-RESPONSE=$(echo $REQUEST | curl -X POST --data-binary @- http://localhost:21323/internal/vcr/v1/vc -H "Content-Type:application/json")
+REQUEST="{\"type\":\"NutsOrganizationCredential\",\"issuer\":\"${VENDOR_B_DID}\", \"credentialSubject\": {\"id\":\"${VENDOR_B_DID}\", \"organization\":{\"name\":\"Caresoft B.V.\", \"city\":\"Caretown\"}},\"visibility\": \"public\"}"
+RESPONSE=$(echo $REQUEST | curl -X POST --data-binary @- http://localhost:21323/internal/vcr/v2/issuer/vc -H "Content-Type:application/json")
 if echo $RESPONSE | grep -q "VerifiableCredential"; then
   echo "VC issued"
 else

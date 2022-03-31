@@ -8,6 +8,14 @@ pushd direct-wan || exit
 popd || exit
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!! Running test: Private TXs      !!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+pushd private-transactions || exit
+./prepare.sh
+./run-test.sh
+popd || exit
+
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: SSL-Offloading   !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 pushd ssl-offloading || exit
