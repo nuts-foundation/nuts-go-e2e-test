@@ -44,25 +44,9 @@ done
 echo "------------------------------------"
 echo "Performing assertions..."
 echo "------------------------------------"
-sleep 5
-# Assert that node A received all transactions
-RESPONSE=$(curl -s http://localhost:11323/status/diagnostics)
-if echo $RESPONSE | grep -q "transaction_count: 81"; then
-  echo "Number of TXs of node A are OK"
-else
-  echo "FAILED: Node A does not report 81 TXs!" 1>&2
-  echo $RESPONSE
-  exit 1
-fi
-# Assert that node D received all transactions
-RESPONSE=$(curl -s http://localhost:41323/status/diagnostics)
-if echo $RESPONSE | grep -q "transaction_count: 81"; then
-  echo "Number of TXs of node D are OK"
-else
-  echo "FAILED: Node D does not report 81 TXs!" 1>&2
-  echo $RESPONSE
-  exit 1
-fi
+
+waitForTXCount "NodeA" "http://localhost:11323/status/diagnostics" 81 5
+waitForTXCount "NodeD" "http://localhost:41323/status/diagnostics" 81 5
 
 echo "------------------------------------"
 echo "Stopping Docker containers..."
