@@ -24,3 +24,31 @@ function waitForDCService {
   fi
   echo ""
 }
+
+function waitForTXCount {
+  SERVICE_NAME=$1
+  URL=$2
+  TX_COUNT=$3
+  TIMEOUT=$4
+  printf "Waiting for service '%s' to contain %s transactions" $SERVICE_NAME $TX_COUNT
+  done=false
+  retry=0
+  while [ $retry -lt $TIMEOUT ]; do
+
+    RESPONSE=$(curl -s $URL)
+    if echo $RESPONSE | grep -q "transaction_count: $TX_COUNT"; then
+      done=true
+      break
+    fi
+
+    printf "."
+    sleep 1
+    retry=$[$retry+1]
+  done
+
+  if [ $done == false ]; then
+    printf "FAILED: Service '%s' dit not get %d transaction within %d seconds" $SERVICE_NAME $TX_COUNT $TIMEOUT
+    exit 1
+  fi
+  echo ""
+}
