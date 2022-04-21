@@ -31,16 +31,8 @@ done
 echo "------------------------------------"
 echo "Performing assertions..."
 echo "------------------------------------"
-sleep 15
-# Assert that node B received all transactions
-RESPONSE=$(curl -s http://localhost:21323/status/diagnostics)
-if echo $RESPONSE | grep -q "transaction_count: 200"; then
-  echo "Number of TXs of node B are OK"
-else
-  echo "FAILED: Node B does not report 200 TXs!" 1>&2
-  echo $RESPONSE
-  exit 1
-fi
+
+waitForTXCount "NodeB" "http://localhost:21323/status/diagnostics" 200 15
 
 echo "------------------------------------"
 echo "Stopping Docker containers..."
