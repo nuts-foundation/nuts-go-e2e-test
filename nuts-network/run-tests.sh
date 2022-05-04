@@ -32,13 +32,13 @@ popd || exit
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: Gossip           !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd ssl-offloading || exit
+pushd gossip || exit
 ./run-test.sh
 popd || exit
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: Gossip-Overflow  !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd ssl-pass-through || exit
+pushd gossip-overflow || exit
 ./run-test.sh
 popd || exit
