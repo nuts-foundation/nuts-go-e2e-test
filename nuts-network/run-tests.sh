@@ -23,8 +23,22 @@ pushd ssl-offloading || exit
 popd || exit
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-echo "!! Running test: SSL-Pass-through !!"
+echo "!! Running test: SSL-Pass-Through !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 pushd ssl-pass-through || exit
+./run-test.sh
+popd || exit
+
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!! Running test: Gossip           !!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+pushd gossip || exit
+./run-test.sh
+popd || exit
+
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!! Running test: Gossip-Overflow  !!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+pushd gossip-overflow || exit
 ./run-test.sh
 popd || exit
