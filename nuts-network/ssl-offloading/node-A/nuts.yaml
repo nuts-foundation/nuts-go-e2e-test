@@ -13,3 +13,5 @@ network:
   grpcaddr:	:5555
   # Because the proxy is offloading TLS for this node, enableTLS=false and trustStoreFile is not configured:
   enabletls: false
+  v2:
+    gossipinterval: 100
