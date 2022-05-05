@@ -1,0 +1,15 @@
+datadir: /opt/nuts/data
+http:
+  default:
+    address: :1323
+    cors:
+      origin: "*"
+verbosity: debug
+auth:
+  contractvalidators:
+    - dummy
+    - dummy
+    - dummy
+network:
+  enabletls: false
+  disablenodeauthentication: true
