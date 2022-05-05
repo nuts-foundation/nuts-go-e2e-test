@@ -15,3 +15,5 @@ network:
   certfile: /opt/nuts/certificate-and-key.pem
   certkeyfile: /opt/nuts/certificate-and-key.pem
   bootstrapnodes: nodeA-backend:5555
+  v2:
+    gossipinterval: 100
