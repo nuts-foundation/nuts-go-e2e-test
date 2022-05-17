@@ -60,8 +60,8 @@ docker-compose exec nodeA-backend nuts vcr trust "NutsOrganizationCredential" "$
 # Vendor B must trust its own 'NutsOrganizationCredential's since it's self-issued
 docker-compose exec nodeB nuts vcr trust "NutsOrganizationCredential" "${VENDOR_B_DID}"
 
-echo Waiting 2 seconds for updates to be propagated on the network...
-sleep 2
+echo Waiting 4 seconds for updates to be propagated on the network...
+sleep 4
 
 echo "------------------------------------"
 echo "Sign contract..."
