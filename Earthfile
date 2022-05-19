@@ -58,3 +58,4 @@ all:
     BUILD +network-ssloffloading
     BUILD +network-ssl-pass-through
     BUILD +oauth-flow
+    BUILD +private-transactions
