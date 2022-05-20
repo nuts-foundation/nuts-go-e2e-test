@@ -80,4 +80,4 @@ fi
 echo "------------------------------------"
 echo "Stopping Docker containers..."
 echo "------------------------------------"
-docker compose down
+docker-compose down
