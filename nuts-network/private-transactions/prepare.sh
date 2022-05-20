@@ -59,3 +59,5 @@ echo "" >> node-A/nuts.yaml
 echo "  nodedid: $didNodeA" >> node-A/nuts.yaml
 echo "" >> node-B/nuts.yaml
 echo "  nodedid: $didNodeB" >> node-B/nuts.yaml
+
+docker compose stop

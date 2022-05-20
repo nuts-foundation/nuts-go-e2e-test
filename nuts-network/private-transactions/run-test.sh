@@ -65,14 +65,14 @@ createAuthCredential "http://localhost:11323" "$didNodeA" "$didNodeB"
 createAuthCredential "http://localhost:21323" "$didNodeB" "$didNodeA"
 
 # Wait for transactions to sync
-sleep 5
+sleep 10
 
-if [ $(searchAuthCredentials "http://localhost:11323" | jq "length") -ne 2 ]; then
+if [ $(searchAuthCredentials "http://localhost:11323" | jq ".verifiableCredentials[].verifiableCredential.id" | wc -l) -ne "2" ]; then
   echo "failed to find NutsAuthorizationCredentials on Node-A"
   exit 1
 fi
 
-if [ $(searchAuthCredentials "http://localhost:21323" | jq "length") -ne 2 ]; then
+if [ $(searchAuthCredentials "http://localhost:21323" | jq ".verifiableCredentials[].verifiableCredential.id" | wc -l) -ne "2" ]; then
   echo "failed to find NutsAuthorizationCredentials on Node-B"
   exit 1
 fi
@@ -80,4 +80,4 @@ fi
 echo "------------------------------------"
 echo "Stopping Docker containers..."
 echo "------------------------------------"
-docker-compose stop
+docker compose down
