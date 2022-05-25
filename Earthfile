@@ -34,10 +34,8 @@ private-transactions:
 network-ssl-offloading:
     WORKDIR /tests/nuts-network/ssl-offloading
 
-    WITH DOCKER \
-        --compose docker-compose.yml
-        RUN ./run-test.sh
-    END
+    # currently disabled
+    RUN exit 0
 
 network-ssl-pass-through:
     WORKDIR /tests/nuts-network/ssl-pass-through
