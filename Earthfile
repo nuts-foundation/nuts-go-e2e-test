@@ -1,3 +1,4 @@
+VERSION 0.6
 FROM earthly/dind:ubuntu
 
 COPY . /tests
@@ -30,7 +31,7 @@ private-transactions:
         RUN ./run-test.sh
     END
 
-network-ssloffloading:
+network-ssl-offloading:
     WORKDIR /tests/nuts-network/ssl-offloading
 
     # currently disabled
@@ -41,6 +42,22 @@ network-ssl-pass-through:
 
     # currently disabled
     RUN exit 0
+
+network-gossip:
+    WORKDIR /tests/nuts-network/gossip
+
+    WITH DOCKER \
+        --compose docker-compose.yml
+        RUN ./run-test.sh
+    END
+
+network-gossip-overflow:
+    WORKDIR /tests/nuts-network/gossip-overflow
+
+    WITH DOCKER \
+        --compose docker-compose.yml
+        RUN ./run-test.sh
+    END
 
 oauth-flow:
     WORKDIR /tests/oauth-flow
@@ -55,7 +72,9 @@ oauth-flow:
 
 all:
     BUILD +network-direct-wan
-    BUILD +network-ssloffloading
+    BUILD +network-ssl-offloading
     BUILD +network-ssl-pass-through
     BUILD +oauth-flow
     BUILD +private-transactions
+    BUILD +network-gossip
+    BUILD +network-gossip-overflow
