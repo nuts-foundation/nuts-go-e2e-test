@@ -32,7 +32,7 @@ echo "------------------------------------"
 echo "Performing assertions..."
 echo "------------------------------------"
 
-waitForTXCount "NodeB" "http://localhost:21323/status/diagnostics" 200 15
+waitForTXCount "NodeB" "http://localhost:21323/status/diagnostics" 200 20
 
 echo "------------------------------------"
 echo "Stopping Docker containers..."
