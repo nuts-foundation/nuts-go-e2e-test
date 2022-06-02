@@ -69,12 +69,12 @@ sleep 10
 
 if [ $(searchAuthCredentials "http://localhost:11323" | jq ".verifiableCredentials[].verifiableCredential.id" | wc -l) -ne "2" ]; then
   echo "failed to find NutsAuthorizationCredentials on Node-A"
-  exit 1
+  exitWithDockerLogs 1
 fi
 
 if [ $(searchAuthCredentials "http://localhost:21323" | jq ".verifiableCredentials[].verifiableCredential.id" | wc -l) -ne "2" ]; then
   echo "failed to find NutsAuthorizationCredentials on Node-B"
-  exit 1
+  exitWithDockerLogs 1
 fi
 
 echo "------------------------------------"

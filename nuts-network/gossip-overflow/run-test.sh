@@ -23,7 +23,7 @@ echo "------------------------------------"
 echo "Creating transactions"
 echo "------------------------------------"
 
-for i in {1..200}
+for _ in {1..200}
 do
    curl -s -X POST http://localhost:11323/internal/vdr/v1/did >/dev/null
 done

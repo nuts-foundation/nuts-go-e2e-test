@@ -52,7 +52,7 @@ if echo $RESPONSE | grep -q "VerifiableCredential"; then
 else
   echo "FAILED: Could not issue NutsOrganizationCredential to node-B" 1>&2
   echo $RESPONSE
-  exit 1
+  exitWithDockerLogs 1
 fi
 
 # Vendor A must trust 'NutsOrganizationCredential's from Vendor B
@@ -76,7 +76,7 @@ if echo $RESPONSE | grep -q "PractitionerLogin"; then
 else
   echo "FAILED: Could not get contract drawn up at node-B" 1>&2
   echo $RESPONSE
-  exit 1
+  exitWithDockerLogs 1
 fi
 
 # sign the contract with dummy means
@@ -88,7 +88,7 @@ if echo $RESPONSE | grep -q "sessionPtr"; then
 else
   echo "FAILED: Could not get contract signed at node-B" 1>&2
   echo $RESPONSE
-  exit 1
+  exitWithDockerLogs 1
 fi
 
 # poll once for status created
@@ -98,7 +98,7 @@ if echo $RESPONSE | grep -q "created"; then
 else
   echo "FAILED: Could not get session status from node-B" 1>&2
   echo $RESPONSE
-  exit 1
+  exitWithDockerLogs 1
 fi
 
 # poll twice for status success
@@ -108,7 +108,7 @@ if echo $RESPONSE | grep -q "in-progress"; then
 else
   echo "FAILED: Could not get session status from node-B" 1>&2
   echo $RESPONSE
-  exit 1
+  exitWithDockerLogs 1
 fi
 
 # poll three times for status completed
@@ -119,7 +119,7 @@ if echo $RESPONSE | grep -q "completed"; then
 else
   echo "FAILED: Could not get session status from node-B" 1>&2
   echo $RESPONSE
-  exit 1
+  exitWithDockerLogs 1
 fi
 
 echo "------------------------------------"
@@ -135,7 +135,7 @@ if echo $RESPONSE | grep -q "access_token"; then
 else
   echo "FAILED: Could not get JWT access token from node-A" 1>&2
   echo $RESPONSE
-  exit 1
+  exitWithDockerLogs 1
 fi
 
 echo "------------------------------------"
@@ -148,7 +148,7 @@ if echo $RESPONSE | grep -q "pong"; then
 else
   echo "FAILED: Could not ping node-A" 1>&2
   echo $RESPONSE
-  exit 1
+  exitWithDockerLogs 1
 fi
 
 echo "------------------------------------"

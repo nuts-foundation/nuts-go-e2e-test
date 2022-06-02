@@ -20,7 +20,7 @@ function waitForDCService {
 
   if [ $healthy -eq 0 ]; then
     echo "FAILED: Service took to long to start"
-    exit 1
+    exitWithDockerLogs 1
   fi
   echo ""
 }
@@ -47,8 +47,15 @@ function waitForTXCount {
   done
 
   if [ $done == false ]; then
-    printf "FAILED: Service '%s' dit not get %d transaction within %d seconds" $SERVICE_NAME $TX_COUNT $TIMEOUT
-    exit 1
+    printf "FAILED: Service '%s' did not get %d transaction within %d seconds" $SERVICE_NAME $TX_COUNT $TIMEOUT
+    exitWithDockerLogs 1
   fi
   echo ""
+}
+
+function exitWithDockerLogs {
+  EXIT_CODE=$1
+  docker-compose logs
+  docker-compose stop
+  exit $EXIT_CODE
 }

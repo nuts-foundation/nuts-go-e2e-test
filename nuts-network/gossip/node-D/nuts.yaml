@@ -13,7 +13,5 @@ network:
   publicaddr: nodeD:5555
   grpcaddr:	:5555
   enabletls: false
-  v1:
-    adverthashesinterval: 3600000
   v2:
     gossipinterval: 500

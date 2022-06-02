@@ -31,7 +31,7 @@ if echo $RESPONSE | grep -q "connected_peers_count: 1"; then
 else
   echo "FAILED: Node A does not report 1 connected peer!" 1>&2
   echo $RESPONSE
-  exit 1
+  exitWithDockerLogs 1
 fi
 RESPONSE=$(curl -s http://localhost:21323/status/diagnostics)
 if echo $RESPONSE | grep -q "connected_peers_count: 1"; then
@@ -39,7 +39,7 @@ if echo $RESPONSE | grep -q "connected_peers_count: 1"; then
 else
   echo "FAILED: Node B does not report 1 connected peer!" 1>&2
   echo $RESPONSE
-  exit 1
+  exitWithDockerLogs 1
 fi
 
 echo "------------------------------------"
