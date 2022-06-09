@@ -26,8 +26,6 @@ echo "------------------------------------"
 
 docker-compose down
 docker-compose rm -f -v
-rm -rf ./node-*/data
-sed -i '' -e '/nodedid: did:nuts:/d' ./node-*/nuts.yaml
 
 echo "------------------------------------"
 echo "Starting Docker containers..."
@@ -57,7 +55,9 @@ printf "NodeDID for node-b: %s\n" "$didNodeB"
 # Wait for the transactions to be processed
 sleep 5
 
+echo "" >> node-A/nuts.yaml
 echo "  nodedid: $didNodeA" >> node-A/nuts.yaml
+echo "" >> node-B/nuts.yaml
 echo "  nodedid: $didNodeB" >> node-B/nuts.yaml
 
 docker-compose stop

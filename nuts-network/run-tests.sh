@@ -1,46 +1,44 @@
 #!/usr/bin/env bash
 
-set -e # make script fail if any of the tests returns a non-zero exit code
-
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: Direct WAN       !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd direct-wan
+pushd direct-wan || exit
 ./run-test.sh
-popd
+popd || exit
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: Private TXs      !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd private-transactions
+pushd private-transactions || exit
 ./prepare.sh
 ./run-test.sh
-popd
+popd || exit
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: SSL-Offloading   !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd ssl-offloading
+pushd ssl-offloading || exit
 ./run-test.sh
-popd
+popd || exit
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: SSL-Pass-Through !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd ssl-pass-through
+pushd ssl-pass-through || exit
 ./run-test.sh
-popd
+popd || exit
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: Gossip           !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd gossip
+pushd gossip || exit
 ./run-test.sh
-popd
+popd || exit
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: Gossip-Overflow  !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd gossip-overflow
+pushd gossip-overflow || exit
 ./run-test.sh
-popd
+popd || exit

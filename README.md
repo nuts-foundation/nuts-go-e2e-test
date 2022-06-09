@@ -4,6 +4,8 @@ This repository contains end-to-end tests for the [nuts-node](https://github.com
 ## Automated testing
 [Automated testing](https://github.com/nuts-foundation/nuts-node/blob/master/.github/workflows/e2e-tests.yaml) of the nuts-node relies on some find and replace magic for which the following requirements must be met:
 
+- Each test has a `+target` under `all`  in the `Earthfile`
+- Tests in the `Earthfile` should contain `WITH DOCKER` so the correct Docker image can be inserted.
 - Each test has a `docker-compose.yml` and a `run-test.sh` file. 
 - References to Docker image `nutsfoundation/nuts-node:master` in the `docker-compose.yml` file are automatically replaced with the image that is built in the automated test.
 
