@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 
+set -e # make script fail if any of the tests returns a non-zero exit code
+
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test suite: Nuts Network !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd nuts-network || exit
+pushd nuts-network
 ./run-tests.sh
-popd || exit
+popd
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test suite: OAuth flow   !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd oauth-flow || exit
+pushd oauth-flow
 ./run-tests.sh
-popd || exit
+popd
