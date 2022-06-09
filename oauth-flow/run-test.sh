@@ -6,7 +6,7 @@ echo "Cleaning up running Docker containers and volumes, and key material..."
 echo "------------------------------------"
 docker-compose down
 docker-compose rm -f -v
-rm -rf ./node-*/data
+rm -rf ./node-*/data/* # Only remove dir contents since removing the dir itself will require docker to recreate it with root rights. This causes permission issues in CI.
 
 echo "------------------------------------"
 echo "Starting Docker containers..."
