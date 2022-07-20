@@ -32,9 +32,22 @@ do
    curl -s -X POST http://localhost:21323/internal/vdr/v1/did >/dev/null
 done
 
+echo "----------------------------------------"
+echo "Performing assertions before restart..."
+echo "----------------------------------------"
+waitForTXCount "NodeA" "http://localhost:11323/status/diagnostics" 41 10
+waitForTXCount "NodeB" "http://localhost:21323/status/diagnostics" 41 10
+
 echo "------------------------------------"
-echo "Performing assertions..."
+echo "Restarting Docker containers..."
 echo "------------------------------------"
+docker-compose restart nodeA nodeB
+waitForDCService nodeA
+waitForDCService nodeB
+
+echo "----------------------------------------"
+echo "Performing assertions after restart..."
+echo "----------------------------------------"
 waitForTXCount "NodeA" "http://localhost:11323/status/diagnostics" 41 10
 waitForTXCount "NodeB" "http://localhost:21323/status/diagnostics" 41 10
 
