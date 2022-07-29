@@ -1,4 +1,5 @@
 verbosity: debug
+internalratelimiter: false
 datadir: /opt/nuts/data
 http:
   default:

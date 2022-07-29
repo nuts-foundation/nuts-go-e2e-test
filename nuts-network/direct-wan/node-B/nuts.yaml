@@ -1,4 +1,5 @@
 verbosity: debug
+internalratelimiter: false
 http:
   default:
     address: :1323
