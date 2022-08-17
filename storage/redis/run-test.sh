@@ -41,7 +41,7 @@ waitForTXCount "NodeB" "http://localhost:21323/status/diagnostics" 41 10
 echo "------------------------------------"
 echo "Restarting Docker containers..."
 echo "------------------------------------"
-docker-compose restart nodeA nodeB
+docker-compose restart nodeA nodeB redis
 waitForDCService nodeA
 waitForDCService nodeB
 
