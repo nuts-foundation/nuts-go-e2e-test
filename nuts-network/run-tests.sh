@@ -18,9 +18,6 @@ pushd private-transactions
 ./run-test.sh
 popd
 
-echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-echo "!! Running test: SSL-Offloading   !!"
-echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 pushd ssl-offloading
 ./run-test.sh
 popd
