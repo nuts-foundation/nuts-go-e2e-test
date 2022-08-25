@@ -98,7 +98,7 @@ if [ $(searchAuthCredentials "http://localhost:11323" | jq ".verifiableCredentia
 fi
 
 if [ $(searchAuthCredentials "http://localhost:21323" | jq ".verifiableCredentials[].verifiableCredential.id" | wc -l) -ne "0" ]; then
-  echo "NutsAuthorizationCredentials should have been revoked so they can't be resolved on Node-A"
+  echo "NutsAuthorizationCredentials should have been revoked so they can't be resolved on Node-B"
   exitWithDockerLogs 1
 fi
 
