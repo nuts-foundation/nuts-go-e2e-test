@@ -8,3 +8,10 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 pushd redis
 ./run-test.sh
 popd
+
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!! Running test: Backup/Restore   !!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+pushd backu-restore
+#./run-test.sh
+popd

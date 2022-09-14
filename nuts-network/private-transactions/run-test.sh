@@ -8,27 +8,6 @@ function findNodeDID() {
   egrep -o 'nodedid:.*' $1 | awk '{print $2}'
 }
 
-function createAuthCredential() {
-  printf '{
-    "type": "NutsAuthorizationCredential",
-    "issuer": "%s",
-    "credentialSubject": {
-      "id": "%s",
-      "legalBase": {
-        "consentType": "implied"
-      },
-      "resources": [],
-      "purposeOfUse": "example",
-      "subject": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780"
-    },
-   "visibility": "private"
-  }' "$2" "$3" | curl -s -X POST "$1/internal/vcr/v2/issuer/vc" -H "Content-Type: application/json" --data-binary @- | jq ".id" | sed "s/\"//g"
-}
-
-function revokeAuthCredential() {
-  curl -s -X DELETE "$1/internal/vcr/v2/issuer/vc/$2" > /dev/null
-}
-
 function searchAuthCredentials() {
   printf '{
     "query": {
@@ -86,8 +65,8 @@ fi
 echo "------------------------------------"
 echo "Revoking NutsAuthorizationCredential..."
 echo "------------------------------------"
-revokeAuthCredential "http://localhost:11323" "${vcNodeA//#/%23}"
-revokeAuthCredential "http://localhost:21323" "${vcNodeB//#/%23}"
+revokeCredential "http://localhost:11323" "${vcNodeA}"
+revokeCredential "http://localhost:21323" "${vcNodeB}"
 
 # Wait for transactions to sync
 sleep 5
