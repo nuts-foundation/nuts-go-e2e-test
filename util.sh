@@ -66,7 +66,8 @@ function waitForKeyPress() {
 }
 
 # setupNode creates a node's DID document and registers its NutsComm endpoint.
-# Args: node HTTP address, node gRPC address
+# Args:     node HTTP address, node gRPC address
+# Returns:  the created DID
 function setupNode() {
   local did=$(printf '{
     "selfControl": true,
@@ -83,9 +84,9 @@ function setupNode() {
   echo "$did"
 }
 
-# assertDiagnostics checks whether a certain string appears on a node's diagnostics page.
+# assertDiagnostic checks whether a certain string appears on a node's diagnostics page.
 # Args: node HTTP address, string to assert
-function assertDiagnostics() {
+function assertDiagnostic() {
   RESPONSE=$(curl -s "$1/status/diagnostics")
   if echo $RESPONSE | grep -q "${2}"; then
     echo "Diagnostics contains '${2}'"
@@ -96,8 +97,17 @@ function assertDiagnostics() {
   fi
 }
 
+# readDiagnostic reads a specific value from the node's diagnostics page.
+# Args: node HTTP address, key to read
+function readDiagnostic() {
+  # Given 'uptime'; read diagnostics, find line with 'uptime: ' and remove key + colon, print with stripped spaces
+  local result=$(curl -s "$1/status/diagnostics" | grep "${2}:" | sed -e "s/$2://")
+  echo -n "${result//[[:space:]]/}"
+}
+
 # createAuthCredential issues a NutsAuthorizationCredential
-# Args: issuing node HTTP address, issuer DID, subject DID
+# Args:     issuing node HTTP address, issuer DID, subject DID
+# Returns:  the VC ID
 function createAuthCredential() {
   printf '{
     "type": "NutsAuthorizationCredential",
@@ -113,6 +123,13 @@ function createAuthCredential() {
     },
    "visibility": "private"
   }' "$2" "$3" | curl -s -X POST "$1/internal/vcr/v2/issuer/vc" -H "Content-Type: application/json" --data-binary @- | jq ".id" | sed "s/\"//g"
+}
+
+# readCredential resolves a VC
+# Args:     node HTTP address, VC ID
+# Returns:  the VC as JSON
+function readCredential() {
+  curl -s "$1/internal/vcr/v2/vc/${2//#/%23}"
 }
 
 # revokeCredential revokes a VC

@@ -19,8 +19,8 @@ echo "Performing assertions (nodes are connected)..."
 echo "------------------------------------"
 # Wait for Nuts Network nodes to build connections
 sleep 5
-assertDiagnostics "http://localhost:11323" "connected_peers_count: 1"
-assertDiagnostics "http://localhost:21323" "connected_peers_count: 1"
+assertDiagnostic "http://localhost:11323" "connected_peers_count: 1"
+assertDiagnostic "http://localhost:21323" "connected_peers_count: 1"
 
 echo "------------------------------------"
 echo "Creating transaction"

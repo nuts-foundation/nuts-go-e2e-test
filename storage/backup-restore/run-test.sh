@@ -20,13 +20,15 @@ echo "------------------------------------"
 echo "Creating DID document and issuing VCs..."
 echo "------------------------------------"
 nodeDID=$(setupNode "http://localhost:11323" nodeA:5555)
-createAuthCredential "http://localhost:11323" "$nodeDID" "$nodeDID"
-vcID=$(createAuthCredential "http://localhost:11323" "$nodeDID" "$nodeDID")
-revokeCredential "http://localhost:11323" "$vcID"
-assertDiagnostics "http://localhost:11323" "transaction_count: 5"
-assertDiagnostics "http://localhost:11323" "credential_count: 2"
-assertDiagnostics "http://localhost:11323" "issued_credentials_count: 2"
-assertDiagnostics "http://localhost:11323" "revocations_count: 1"
+unrevokedVC_ID=$(createAuthCredential "http://localhost:11323" "$nodeDID" "$nodeDID")
+revokedVC_ID=$(createAuthCredential "http://localhost:11323" "$nodeDID" "$nodeDID")
+revokeCredential "http://localhost:11323" "$revokedVC_ID"
+assertDiagnostic "http://localhost:11323" "transaction_count: 5"
+assertDiagnostic "http://localhost:11323" "credential_count: 2"
+assertDiagnostic "http://localhost:11323" "issued_credentials_count: 2"
+assertDiagnostic "http://localhost:11323" "revocations_count: 1"
+DAG_XOR=$(readDiagnostic "http://localhost:11323" dag_xor)
+unrevokedVC=$(readCredential "http://localhost:11323" "${unrevokedVC_ID}")
 
 echo "------------------------------------"
 echo "Making backups, then start with empty node..."
@@ -42,9 +44,9 @@ rm -rf ./node-data/*
 echo "Asserting node is empty"
 BACKUP_INTERVAL=0 docker compose up -d
 waitForDCService nodeA
-assertDiagnostics "http://localhost:11323" "node_did: \"\""
-assertDiagnostics "http://localhost:11323" "transaction_count: 0"
-assertDiagnostics "http://localhost:11323" "credential_count: 0"
+assertDiagnostic "http://localhost:11323" "node_did: \"\""
+assertDiagnostic "http://localhost:11323" "transaction_count: 0"
+assertDiagnostic "http://localhost:11323" "credential_count: 0"
 # Restore data and rebuild
 echo "Restoring node data"
 docker compose stop
@@ -60,8 +62,15 @@ docker compose exec nodeA nuts network reprocess "application/ld+json;type=revoc
 # Wait for some time for reprocess to finish
 sleep 5
 
-assertDiagnostics "http://localhost:11323" "transaction_count: 5"
-assertDiagnostics "http://localhost:11323" "credential_count: 2"
-assertDiagnostics "http://localhost:11323" "issued_credentials_count: 2"
-assertDiagnostics "http://localhost:11323" "revoked_credentials_count: 1"
-assertDiagnostics "http://localhost:11323" "revocations_count: 1"
+assertDiagnostic "http://localhost:11323" "transaction_count: 5"
+assertDiagnostic "http://localhost:11323" "credential_count: 2"
+assertDiagnostic "http://localhost:11323" "issued_credentials_count: 2"
+assertDiagnostic "http://localhost:11323" "revoked_credentials_count: 1"
+assertDiagnostic "http://localhost:11323" "revocations_count: 1"
+assertDiagnostic "http://localhost:11323" "dag_xor: ${DAG_XOR}"
+# Read VC and check its the same after restore
+unrevokedVCAfterRestore=$(readCredential "http://localhost:11323" "${unrevokedVC_ID}")
+if [ "${unrevokedVC}" != "${unrevokedVCAfterRestore}" ]; then
+  echo "FAILED: VC is differs after restore"
+  exit 1
+fi
