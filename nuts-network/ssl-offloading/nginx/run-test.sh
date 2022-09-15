@@ -20,25 +20,8 @@ echo "------------------------------------"
 # Wait for Nuts Network nodes to build connections
 sleep 5
 # Assert that node A is connected to B and vice versa using diagnostics. It should look something like this:
-# [P2P Network] Connected peers #: 1
-#	[P2P Network] Connected peers: (ID=172.19.0.2:43882,NodeID=urn:oid:1.3.6.1.4.1.54851.4:00000002,Addr=172.19.0.2:43882)
-RESPONSE=$(curl -s http://localhost:11323/status/diagnostics)
-if echo $RESPONSE | grep -q "connected_peers_count: 1"; then
-  echo "Number of peers of node A is OK"
-else
-  echo "FAILED: Node A does not report 1 connected peer!" 1>&2
-  echo $RESPONSE
-  exitWithDockerLogs 1
-fi
-RESPONSE=$(curl -s http://localhost:21323/status/diagnostics)
-if echo $RESPONSE | grep -q "connected_peers_count: 1"; then
-  echo "Number of peers of node B is OK"
-else
-  echo "FAILED: Node B does not report 1 connected peer!" 1>&2
-  echo $RESPONSE
-  exitWithDockerLogs 1
-fi
-
+assertDiagnostic "http://localhost:11323" "connected_peers_count: 1"
+assertDiagnostic "http://localhost:21323" "connected_peers_count: 1"
 
 echo "------------------------------------"
 echo "Creating transaction"

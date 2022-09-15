@@ -19,23 +19,8 @@ echo "Performing assertions (nodes are connected)..."
 echo "------------------------------------"
 # Wait for Nuts Network nodes to build connections
 sleep 5
-RESPONSE=$(curl -s http://localhost:11323/status/diagnostics)
-if echo $RESPONSE | grep -q "connected_peers_count: 1"; then
-  echo "Number of peers of node A is OK"
-else
-  echo "FAILED: Node A does not report 1 connected peer!" 1>&2
-  echo $RESPONSE
-  exitWithDockerLogs 1
-fi
-RESPONSE=$(curl -s http://localhost:21323/status/diagnostics)
-if echo $RESPONSE | grep -q "connected_peers_count: 1"; then
-  echo "Number of peers of node B is OK"
-else
-  echo "FAILED: Node B does not report 1 connected peer!" 1>&2
-  echo $RESPONSE
-  exitWithDockerLogs 1
-fi
-
+assertDiagnostic "http://localhost:11323" "connected_peers_count: 1"
+assertDiagnostic "http://localhost:21323" "connected_peers_count: 1"
 
 echo "------------------------------------"
 echo "Creating transaction"

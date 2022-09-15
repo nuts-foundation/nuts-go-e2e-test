@@ -4,22 +4,6 @@ set -e
 
 source ../../util.sh
 
-function setupNode() {
-  local did=$(printf '{
-    "selfControl": true,
-    "keyAgreement": true,
-    "assertionMethod": true,
-    "capabilityInvocation": true
-  }' | curl -s -X POST "$1/internal/vdr/v1/did" -H "Content-Type: application/json" --data-binary @- | jq -r ".id")
-
-  printf '{
-    "type": "NutsComm",
-    "endpoint": "grpc://%s"
-  }' "$2" | curl -s -X POST "$1/internal/didman/v1/did/$did/endpoint" -H "Content-Type: application/json" --data-binary @- > /dev/null
-
-  echo "$did"
-}
-
 echo "------------------------------------"
 echo "Cleaning up running Docker containers and volumes, and key material..."
 echo "------------------------------------"
