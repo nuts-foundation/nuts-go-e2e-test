@@ -37,6 +37,8 @@ sleep 1 # BBolt backup is made every second
 echo "Making backups and removing node data"
 docker compose stop
 # Copy files not in BBolt DB, so they can be restored. Then empty data dir.
+fixPermissions ./node-data
+fixPermissions ./node-backup
 cp ./node-data/vcr/trusted_issuers.yaml ./node-backup/vcr/
 cp -r ./node-data/crypto ./node-backup
 rm -rf ./node-data/*
@@ -50,6 +52,8 @@ assertDiagnostic "http://localhost:11323" "credential_count: 0"
 # Restore data and rebuild
 echo "Restoring node data"
 docker compose stop
+fixPermissions ./node-data
+fixPermissions ./node-backup
 rm -rf ./node-data/*
 cp -r ./node-backup/* ./node-data/
 BACKUP_INTERVAL=0 docker compose up -d
