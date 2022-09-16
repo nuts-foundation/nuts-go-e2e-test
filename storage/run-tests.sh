@@ -12,6 +12,7 @@ popd
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: Backup/Restore   !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd backup-restore
-./run-test.sh
-popd
+echo Test is currently broken on Github Actions, so it is skipped
+#pushd backup-restore
+#./run-test.sh
+#popd
