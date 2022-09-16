@@ -137,3 +137,8 @@ function readCredential() {
 function revokeCredential() {
   curl -s -X DELETE "$1/internal/vcr/v2/issuer/vc/${2//#/%23}"
 }
+
+# fixPermissions changes the user/group of the given directory to the current user/group.
+function fixPermissions() {
+  chown -R $(id -u):$(id -g) $1
+}
