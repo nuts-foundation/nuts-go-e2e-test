@@ -138,6 +138,9 @@ function revokeCredential() {
   curl -s -X DELETE "$1/internal/vcr/v2/issuer/vc/${2//#/%23}"
 }
 
+# runOnAlpine runs the given command on a Alpine docker image
+# Args: Docker volume mount (hostPath:dockerPath), remaining args are the command to run
 function runOnAlpine() {
-  docker run --rm -v "$1:$2:rw" alpine "${@:3}"
+  # To delete folder ./data use: runOnAlpine "$(pwd):/host/" rm -rf /host/node
+  docker run --rm -v "$1" alpine "${@:2}"
 }
