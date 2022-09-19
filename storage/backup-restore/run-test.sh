@@ -52,7 +52,7 @@ assertDiagnostic "http://localhost:11323" "transaction_count: 0"
 assertDiagnostic "http://localhost:11323" "credential_count: 0"
 # Restore data and rebuild
 echo "Restoring node data"
-docker compose down
+docker compose stop
 runOnAlpine "$(pwd)" "/host/" rm -rf /host/node-data
 runOnAlpine "$(pwd)" "/host/" mv -f /host/node-backup /host/node-data
 BACKUP_INTERVAL=0 docker compose up -d
@@ -77,3 +77,5 @@ if [ "${unrevokedVC}" != "${unrevokedVCAfterRestore}" ]; then
   echo "FAILED: VC is differs after restore"
   exit 1
 fi
+
+docker compose stop
