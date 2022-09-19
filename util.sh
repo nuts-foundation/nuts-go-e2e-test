@@ -102,7 +102,7 @@ function assertDiagnostic() {
 function readDiagnostic() {
   # Given 'uptime'; read diagnostics, find line with 'uptime: ' and remove key + colon, print with stripped spaces
   local result=$(curl -s "$1/status/diagnostics" | grep "${2}:" | sed -e "s/$2://")
-  echo -n "${result//[[:space:]]/}"
+  echo -n "${result//[[:space:]]/}"  # builtin sh on mac does not accept -n option, just prints it instead
 }
 
 # createAuthCredential issues a NutsAuthorizationCredential
