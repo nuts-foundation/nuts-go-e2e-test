@@ -3,16 +3,16 @@
 set -e # make script fail if any of the tests returns a non-zero exit code
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-echo "!! Running test suite: Nuts Network !!"
+echo "!! Running test suite: Storage      !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd nuts-network
+pushd storage
 ./run-tests.sh
 popd
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-echo "!! Running test suite: Storage      !!"
+echo "!! Running test suite: Nuts Network !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd storage
+pushd nuts-network
 ./run-tests.sh
 popd
 
