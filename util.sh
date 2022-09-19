@@ -102,7 +102,7 @@ function assertDiagnostic() {
 function readDiagnostic() {
   # Given 'uptime'; read diagnostics, find line with 'uptime: ' and remove key + colon, print with stripped spaces
   local result=$(curl -s "$1/status/diagnostics" | grep "${2}:" | sed -e "s/$2://")
-  echo -n "${result//[[:space:]]/}"
+  echo -n "${result//[[:space:]]/}"  # builtin sh on mac does not accept -n option, just prints it instead
 }
 
 # createAuthCredential issues a NutsAuthorizationCredential
@@ -138,7 +138,6 @@ function revokeCredential() {
   curl -s -X DELETE "$1/internal/vcr/v2/issuer/vc/${2//#/%23}"
 }
 
-# fixPermissions changes the user/group of the given directory to the current user/group.
-function fixPermissions() {
-  chown -R $(id -u):$(id -g) $1
+function runOnAlpine() {
+  docker run --rm -v "$1:$2:rw" alpine "${@:3}"
 }

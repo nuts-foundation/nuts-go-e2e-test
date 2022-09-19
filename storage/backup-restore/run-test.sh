@@ -9,6 +9,7 @@ docker-compose down
 docker-compose rm -f -v
 rm -rf ./node-data/*
 rm -rf ./node-backup/*
+mkdir ./node-data ./node-backup ./node-backup/vcr/ # 'data' dirs will be created with root owner by docker if they do not exit. This creates permission issues on CI.
 
 echo "------------------------------------"
 echo "Starting Docker containers..."
@@ -37,11 +38,11 @@ sleep 1 # BBolt backup is made every second
 echo "Making backups and removing node data"
 docker compose stop
 # Copy files not in BBolt DB, so they can be restored. Then empty data dir.
-fixPermissions ./node-data
-fixPermissions ./node-backup
 cp ./node-data/vcr/trusted_issuers.yaml ./node-backup/vcr/
 cp -r ./node-data/crypto ./node-backup
-rm -rf ./node-data/*
+#docker run --rm -v $(pwd)/:/host-fs/:rw alpine rm -rf /host-fs/node-data
+runOnAlpine "$(pwd)" "/host/" rm -rf /host/node-data
+mkdir ./node-data
 # Restart node, assert node data is empty
 echo "Asserting node is empty"
 BACKUP_INTERVAL=0 docker compose up -d
@@ -51,11 +52,9 @@ assertDiagnostic "http://localhost:11323" "transaction_count: 0"
 assertDiagnostic "http://localhost:11323" "credential_count: 0"
 # Restore data and rebuild
 echo "Restoring node data"
-docker compose stop
-fixPermissions ./node-data
-fixPermissions ./node-backup
-rm -rf ./node-data/*
-cp -r ./node-backup/* ./node-data/
+docker compose down
+runOnAlpine "$(pwd)" "/host/" rm -rf /host/node-data
+runOnAlpine "$(pwd)" "/host/" mv -f /host/node-backup /host/node-data
 BACKUP_INTERVAL=0 docker compose up -d
 waitForDCService nodeA
 
