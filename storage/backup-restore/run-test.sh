@@ -9,6 +9,7 @@ docker-compose down
 docker-compose rm -f -v
 rm -rf ./node-data/*
 rm -rf ./node-backup/*
+mkdir ./node-data ./node-backup  # 'data' dirs will be created with root owner by docker if they do not exit. This creates permission issues on CI.
 
 echo "------------------------------------"
 echo "Starting Docker containers..."
@@ -37,8 +38,6 @@ sleep 1 # BBolt backup is made every second
 echo "Making backups and removing node data"
 docker compose stop
 # Copy files not in BBolt DB, so they can be restored. Then empty data dir.
-fixPermissions ./node-data
-fixPermissions ./node-backup
 cp ./node-data/vcr/trusted_issuers.yaml ./node-backup/vcr/
 cp -r ./node-data/crypto ./node-backup
 rm -rf ./node-data/*
@@ -52,8 +51,6 @@ assertDiagnostic "http://localhost:11323" "credential_count: 0"
 # Restore data and rebuild
 echo "Restoring node data"
 docker compose stop
-fixPermissions ./node-data
-fixPermissions ./node-backup
 rm -rf ./node-data/*
 cp -r ./node-backup/* ./node-data/
 BACKUP_INTERVAL=0 docker compose up -d
