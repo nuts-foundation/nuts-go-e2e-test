@@ -5,8 +5,8 @@ source ../../util.sh
 echo "------------------------------------"
 echo "Cleaning up running Docker containers and volumes, and key material..."
 echo "------------------------------------"
-docker-compose down
-docker-compose rm -f -v
+docker compose down
+docker compose rm -f -v
 rm -rf ./node-data/*
 rm -rf ./node-backup/*
 mkdir ./node-data ./node-backup ./node-backup/vcr/ # 'data' dirs will be created with root owner by docker if they do not exit. This creates permission issues on CI.
@@ -14,7 +14,7 @@ mkdir ./node-data ./node-backup ./node-backup/vcr/ # 'data' dirs will be created
 echo "------------------------------------"
 echo "Starting Docker containers..."
 echo "------------------------------------"
-docker-compose up -d
+docker compose up -d
 waitForDCService nodeA
 
 echo "------------------------------------"
@@ -77,5 +77,4 @@ if [ "${unrevokedVC}" != "${unrevokedVCAfterRestore}" ]; then
   echo "FAILED: VC is differs after restore"
   exit 1
 fi
-
 docker compose stop
