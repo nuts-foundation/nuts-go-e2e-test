@@ -26,7 +26,7 @@ function searchAuthCredentials() {
 echo "------------------------------------"
 echo "Starting Docker containers..."
 echo "------------------------------------"
-docker-compose up -d
+docker compose up -d
 
 waitForDCService nodeA
 waitForDCService nodeB
@@ -84,4 +84,4 @@ fi
 echo "------------------------------------"
 echo "Stopping Docker containers..."
 echo "------------------------------------"
-docker-compose down
+docker compose stop

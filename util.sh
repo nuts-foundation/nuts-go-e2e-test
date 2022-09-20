@@ -2,11 +2,11 @@
 
 function waitForDCService {
   SERVICE_NAME=$1
-  printf "Waiting for docker-compose service '%s' to become healthy" $SERVICE_NAME
+  printf "Waiting for docker compose service '%s' to become healthy" $SERVICE_NAME
   retry=0
   healthy=0
   while [ $retry -lt 30 ]; do
-    status=$(docker inspect -f {{.State.Health.Status}} $(docker-compose ps -q $SERVICE_NAME))
+    status=$(docker inspect -f {{.State.Health.Status}} $(docker compose ps -q $SERVICE_NAME))
 
     if [[ "$status" == "healthy" ]]; then
       healthy=1
@@ -55,8 +55,8 @@ function waitForTXCount {
 
 function exitWithDockerLogs {
   EXIT_CODE=$1
-  docker-compose logs
-  docker-compose stop
+  docker compose logs
+  docker compose stop
   exit $EXIT_CODE
 }
 

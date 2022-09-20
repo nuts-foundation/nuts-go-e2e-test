@@ -8,8 +8,8 @@ echo "------------------------------------"
 echo "Cleaning up running Docker containers and volumes, and key material..."
 echo "------------------------------------"
 
-docker-compose down
-docker-compose rm -f -v
+docker compose down
+docker compose rm -f -v
 rm -rf ./node-*/data
 if [[ $OSTYPE == 'darwin'* ]]; then
   # sed works different on MacOS; see https://stackoverflow.com/questions/19456518
@@ -22,7 +22,7 @@ echo "------------------------------------"
 echo "Starting Docker containers..."
 echo "------------------------------------"
 
-docker-compose up -d
+docker compose up -d
 
 waitForDCService nodeA
 waitForDCService nodeB
@@ -49,4 +49,4 @@ sleep 5
 echo "  nodedid: $didNodeA" >> node-A/nuts.yaml
 echo "  nodedid: $didNodeB" >> node-B/nuts.yaml
 
-docker-compose stop
+docker compose stop

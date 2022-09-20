@@ -4,15 +4,15 @@ source ../util.sh
 echo "------------------------------------"
 echo "Cleaning up running Docker containers and volumes, and key material..."
 echo "------------------------------------"
-docker-compose down
-docker-compose rm -f -v
+docker compose down
+docker compose rm -f -v
 rm -rf ./node-*/data
 mkdir ./node-A/data ./node-B/data  # 'data' dirs will be created with root owner by docker if they do not exit. This creates permission issues on CI.
 
 echo "------------------------------------"
 echo "Starting Docker containers..."
 echo "------------------------------------"
-docker-compose up -d
+docker compose up -d
 waitForDCService nodeA-backend
 waitForDCService nodeB
 
@@ -20,7 +20,7 @@ echo "------------------------------------"
 echo "Registering vendors..."
 echo "------------------------------------"
 # Register Vendor A
-VENDOR_A_DIDDOC=$(docker-compose exec nodeA-backend nuts vdr create-did)
+VENDOR_A_DIDDOC=$(docker compose exec nodeA-backend nuts vdr create-did)
 VENDOR_A_DID=$(echo $VENDOR_A_DIDDOC | jq -r .id)
 echo Vendor A DID: $VENDOR_A_DID
 # Add endpoint and service
@@ -30,11 +30,11 @@ VENDOR_A_KEYID=$(echo $VENDOR_A_DIDDOC | jq -r '.verificationMethod[0].id')
 VENDOR_A_DIDDOC=$(echo $VENDOR_A_DIDDOC | jq ". |= . + {assertionMethod: [\"${VENDOR_A_KEYID}\"]}")
 # Perform update
 echo $VENDOR_A_DIDDOC > ./node-A/data/updated-did.json
-DIDDOC_HASH=$(docker-compose exec nodeA-backend nuts vdr resolve $VENDOR_A_DID --metadata | jq -r .hash)
-docker-compose exec nodeA-backend nuts vdr update "${VENDOR_A_DID}" "${DIDDOC_HASH}" /opt/nuts/data/updated-did.json
+DIDDOC_HASH=$(docker compose exec nodeA-backend nuts vdr resolve $VENDOR_A_DID --metadata | jq -r .hash)
+docker compose exec nodeA-backend nuts vdr update "${VENDOR_A_DID}" "${DIDDOC_HASH}" /opt/nuts/data/updated-did.json
 
 # Register Vendor B
-VENDOR_B_DIDDOC=$(docker-compose exec nodeB nuts vdr create-did)
+VENDOR_B_DIDDOC=$(docker compose exec nodeB nuts vdr create-did)
 VENDOR_B_DID=$(echo $VENDOR_B_DIDDOC | jq -r .id)
 echo Vendor B DID: $VENDOR_B_DID
 # Add assertionMethod
@@ -42,8 +42,8 @@ VENDOR_B_KEYID=$(echo $VENDOR_B_DIDDOC | jq -r '.verificationMethod[0].id')
 VENDOR_B_DIDDOC=$(echo $VENDOR_B_DIDDOC | jq ". |= . + {assertionMethod: [\"${VENDOR_B_KEYID}\"]}")
 # Perform update
 echo $VENDOR_B_DIDDOC > ./node-B/data/updated-did.json
-DIDDOC_HASH=$(docker-compose exec nodeB nuts vdr resolve $VENDOR_B_DID --metadata | jq -r .hash)
-docker-compose exec nodeB nuts vdr update "${VENDOR_B_DID}" "${DIDDOC_HASH}" /opt/nuts/data/updated-did.json
+DIDDOC_HASH=$(docker compose exec nodeB nuts vdr resolve $VENDOR_B_DID --metadata | jq -r .hash)
+docker compose exec nodeB nuts vdr update "${VENDOR_B_DID}" "${DIDDOC_HASH}" /opt/nuts/data/updated-did.json
 
 # Issue NutsOrganizationCredential for Vendor B
 REQUEST="{\"type\":\"NutsOrganizationCredential\",\"issuer\":\"${VENDOR_B_DID}\", \"credentialSubject\": {\"id\":\"${VENDOR_B_DID}\", \"organization\":{\"name\":\"Caresoft B.V.\", \"city\":\"Caretown\"}},\"visibility\": \"public\"}"
@@ -57,9 +57,9 @@ else
 fi
 
 # Vendor A must trust 'NutsOrganizationCredential's from Vendor B
-docker-compose exec nodeA-backend nuts vcr trust "NutsOrganizationCredential" "${VENDOR_B_DID}"
+docker compose exec nodeA-backend nuts vcr trust "NutsOrganizationCredential" "${VENDOR_B_DID}"
 # Vendor B must trust its own 'NutsOrganizationCredential's since it's self-issued
-docker-compose exec nodeB nuts vcr trust "NutsOrganizationCredential" "${VENDOR_B_DID}"
+docker compose exec nodeB nuts vcr trust "NutsOrganizationCredential" "${VENDOR_B_DID}"
 
 echo Waiting 6 seconds for updates to be propagated on the network...
 sleep 6
@@ -143,7 +143,7 @@ echo "------------------------------------"
 echo "Retrieving data..."
 echo "------------------------------------"
 
-RESPONSE=$(docker-compose exec nodeB curl --insecure --cert /opt/nuts/certificate-and-key.pem --key /opt/nuts/certificate-and-key.pem https://nodeA:443/ping -H "Authorization: bearer $(cat ./node-B/data/accesstoken.txt)" -v)
+RESPONSE=$(docker compose exec nodeB curl --insecure --cert /opt/nuts/certificate-and-key.pem --key /opt/nuts/certificate-and-key.pem https://nodeA:443/ping -H "Authorization: bearer $(cat ./node-B/data/accesstoken.txt)" -v)
 if echo $RESPONSE | grep -q "pong"; then
   echo "success!"
 else
@@ -155,4 +155,4 @@ fi
 echo "------------------------------------"
 echo "Stopping Docker containers..."
 echo "------------------------------------"
-docker-compose stop
+docker compose stop
