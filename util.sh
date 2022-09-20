@@ -141,6 +141,11 @@ function revokeCredential() {
 # runOnAlpine runs the given command on a Alpine docker image
 # Args: Docker volume mount (hostPath:dockerPath), remaining args are the command to run
 function runOnAlpine() {
-  # To delete folder ./data use: runOnAlpine "$(pwd):/host/" rm -rf /host/node
+  # Say you have a folder './data/' that is used by the Nuts node, and you want to delete its contents.
+  # Running 'rm -rf ./data/*' from the run-test.sh script will fail with permission issues.
+  # This is due to github actions file permission issues explained in https://github.com/actions/runner/issues/691
+  #
+  # You can successfully delete the entire folder using:
+  # runOnAlpine "$(pwd):/host/" rm -rf /host/data
   docker run --rm -v "$1" alpine "${@:2}"
 }
