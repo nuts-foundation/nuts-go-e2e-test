@@ -14,7 +14,6 @@ This repository contains end-to-end tests for the [nuts-node](https://github.com
 To tun the tests you need the following tools:
 
 - Docker
-- docker-compose
 - [jq](https://stedolan.github.io/jq/) for JSON operations
 
 ## On your machine

@@ -5,13 +5,13 @@ source ../../util.sh
 echo "------------------------------------"
 echo "Cleaning up running Docker containers and volumes, and key material..."
 echo "------------------------------------"
-docker-compose down
-docker-compose rm -f -v
+docker compose down
+docker compose rm -f -v
 
 echo "------------------------------------"
 echo "Starting Docker containers..."
 echo "------------------------------------"
-docker-compose up -d
+docker compose up -d
 waitForDCService nodeA
 waitForDCService nodeB
 waitForDCService nodeC
@@ -51,4 +51,4 @@ waitForTXCount "NodeD" "http://localhost:41323/status/diagnostics" 81 10
 echo "------------------------------------"
 echo "Stopping Docker containers..."
 echo "------------------------------------"
-docker-compose stop
+docker compose stop
