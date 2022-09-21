@@ -5,8 +5,8 @@ source ../../util.sh
 echo "------------------------------------"
 echo "Cleaning up running Docker containers and volumes, and key material..."
 echo "------------------------------------"
-docker-compose down
-docker-compose rm -f -v
+docker compose down
+docker compose rm -f -v
 rm -rf ./node-data/*
 rm -rf ./node-backup/*
 mkdir ./node-data ./node-backup ./node-backup/vcr/ # 'data' dirs will be created with root owner by docker if they do not exit. This creates permission issues on CI.
@@ -14,7 +14,7 @@ mkdir ./node-data ./node-backup ./node-backup/vcr/ # 'data' dirs will be created
 echo "------------------------------------"
 echo "Starting Docker containers..."
 echo "------------------------------------"
-docker-compose up -d
+docker compose up -d
 waitForDCService nodeA
 
 echo "------------------------------------"
@@ -40,8 +40,7 @@ docker compose stop
 # Copy files not in BBolt DB, so they can be restored. Then empty data dir.
 cp ./node-data/vcr/trusted_issuers.yaml ./node-backup/vcr/
 cp -r ./node-data/crypto ./node-backup
-#docker run --rm -v $(pwd)/:/host-fs/:rw alpine rm -rf /host-fs/node-data
-runOnAlpine "$(pwd)" "/host/" rm -rf /host/node-data
+runOnAlpine "$(pwd):/host/" rm -rf /host/node-data
 mkdir ./node-data
 # Restart node, assert node data is empty
 echo "Asserting node is empty"
@@ -53,8 +52,8 @@ assertDiagnostic "http://localhost:11323" "credential_count: 0"
 # Restore data and rebuild
 echo "Restoring node data"
 docker compose stop
-runOnAlpine "$(pwd)" "/host/" rm -rf /host/node-data
-runOnAlpine "$(pwd)" "/host/" mv -f /host/node-backup /host/node-data
+runOnAlpine "$(pwd):/host/" rm -rf /host/node-data
+runOnAlpine "$(pwd):/host/" mv -f /host/node-backup /host/node-data
 BACKUP_INTERVAL=0 docker compose up -d
 waitForDCService nodeA
 
@@ -78,4 +77,7 @@ if [ "${unrevokedVC}" != "${unrevokedVCAfterRestore}" ]; then
   exit 1
 fi
 
+echo "------------------------------------"
+echo "Stopping Docker containers..."
+echo "------------------------------------"
 docker compose stop
