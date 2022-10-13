@@ -20,4 +20,3 @@ network:
   certkeyfile: /opt/nuts/certificate-and-key.pem
   v2:
     gossipinterval: 500
-  nodedid: did:nuts:7nQRo7s5urqCkimYGc92f3XBBxghRU1SthoWK8aYrajZ
