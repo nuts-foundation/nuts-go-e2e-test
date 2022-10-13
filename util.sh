@@ -109,14 +109,15 @@ function readDiagnostic() {
 # Args:     issuing node HTTP address, issuer DID, subject DID
 # Returns:  the VC ID
 function createAuthCredential() {
+  # v2 credential would/could add the following to credentialSubject:
+  # "legalBase": {
+  #    "consentType": "implied"
+  #  }
   printf '{
     "type": "NutsAuthorizationCredential",
     "issuer": "%s",
     "credentialSubject": {
       "id": "%s",
-      "legalBase": {
-        "consentType": "implied"
-      },
       "resources": [],
       "purposeOfUse": "example",
       "subject": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780"
