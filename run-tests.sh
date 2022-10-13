@@ -2,8 +2,6 @@
 
 set -e # make script fail if any of the tests returns a non-zero exit code
 
-docker pull nutsfoundation/nuts-node:master
-
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test suite: Nuts Network !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
