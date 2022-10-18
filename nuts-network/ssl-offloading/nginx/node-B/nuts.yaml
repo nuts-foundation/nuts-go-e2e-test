@@ -6,9 +6,6 @@ auth:
   irma:
     autoupdateschemas: false
 tls:
-  truststorefile: /opt/nuts/truststore.pem
-  certfile: /opt/nuts/certificate-and-key.pem
-  certkeyfile: /opt/nuts/certificate-and-key.pem
   offload: incoming
   certheader: X-SSL-CERT
 network:
@@ -17,3 +14,6 @@ network:
   grpcaddr:	:5555
   v2:
     gossipinterval: 250
+  truststorefile: /opt/nuts/truststore.pem
+  certfile: /opt/nuts/certificate-and-key.pem
+  certkeyfile: /opt/nuts/certificate-and-key.pem

@@ -10,10 +10,9 @@ auth:
     - dummy
   irma:
     autoupdateschemas: false
-tls:
-  truststorefile: /opt/nuts/truststore.pem
-  certfile: /opt/nuts/certificate-and-key.pem
-  certkeyfile: /opt/nuts/certificate-and-key.pem
 network:
   v2:
     gossipinterval: 500
+  truststorefile: /opt/nuts/truststore.pem
+  certfile: /opt/nuts/certificate-and-key.pem
+  certkeyfile: /opt/nuts/certificate-and-key.pem

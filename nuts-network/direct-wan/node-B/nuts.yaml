@@ -13,7 +13,6 @@ network:
   bootstrapnodes: nodeA:5555
   publicaddr: nodeB:5555
   grpcaddr:	:5555
-tls:
   truststorefile: /opt/nuts/truststore.pem
   certfile: /opt/nuts/certificate-and-key.pem
   certkeyfile: /opt/nuts/certificate-and-key.pem

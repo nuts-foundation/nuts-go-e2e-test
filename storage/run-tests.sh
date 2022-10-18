@@ -12,6 +12,7 @@ popd
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: Backup/Restore   !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-pushd backup-restore
-./run-test.sh
-popd
+# Skipped on master as well
+#pushd backup-restore
+#./run-test.sh
+#popd

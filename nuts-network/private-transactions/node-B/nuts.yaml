@@ -13,14 +13,12 @@ auth:
     autoupdateschemas: false
 vcr:
   overrideissueallpublic: false
-tls:
-  truststorefile: /opt/nuts/truststore.pem
-  certfile: /opt/nuts/certificate-and-key.pem
-  certkeyfile: /opt/nuts/certificate-and-key.pem
 network:
   bootstrapnodes: nodeA:5555
   publicaddr: nodeB:5555
   grpcaddr:	:5555
   v2:
     gossipinterval: 450
-  nodedid: did:nuts:H8VPcV4TGkjFiq1iT8VQXR6e6scS1jRLWNvU8xEAJpSM
+  truststorefile: /opt/nuts/truststore.pem
+  certfile: /opt/nuts/certificate-and-key.pem
+  certkeyfile: /opt/nuts/certificate-and-key.pem

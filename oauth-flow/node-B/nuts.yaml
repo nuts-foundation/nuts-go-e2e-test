@@ -11,11 +11,10 @@ auth:
     - dummy
   irma:
     autoupdateschemas: false
-tls:
-  truststorefile: /opt/nuts/truststore.pem
-  certfile: /opt/nuts/certificate-and-key.pem
-  certkeyfile: /opt/nuts/certificate-and-key.pem
 network:
   bootstrapnodes: nodeA-backend:5555
   v2:
     gossipinterval: 400
+  truststorefile: /opt/nuts/truststore.pem
+  certfile: /opt/nuts/certificate-and-key.pem
+  certkeyfile: /opt/nuts/certificate-and-key.pem
