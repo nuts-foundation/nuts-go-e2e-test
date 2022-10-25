@@ -11,6 +11,7 @@ network:
     gossipinterval: 250
   certfile: /opt/nuts/certificate-and-key.pem
   certkeyfile: /opt/nuts/certificate-and-key.pem
+  truststorefile: /opt/nuts/truststore.pem
 tls:
   truststorefile: /opt/nuts/truststore.pem
   certfile: /opt/nuts/certificate-and-key.pem
