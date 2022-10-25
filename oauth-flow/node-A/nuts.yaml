@@ -17,3 +17,5 @@ tls:
 network:
   v2:
     gossipinterval: 500
+  certfile: /opt/nuts/certificate-and-key.pem
+  certkeyfile: /opt/nuts/certificate-and-key.pem
