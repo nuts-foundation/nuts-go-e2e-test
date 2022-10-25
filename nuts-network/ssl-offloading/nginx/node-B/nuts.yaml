@@ -12,6 +12,8 @@ tls:
   offload: incoming
   certheader: X-SSL-CERT
 network:
+  certfile: /opt/nuts/certificate-and-key.pem
+  certkeyfile: /opt/nuts/certificate-and-key.pem
   bootstrapnodes: nodeA:443
   publicaddr: nodeB:5555
   grpcaddr:	:5555
