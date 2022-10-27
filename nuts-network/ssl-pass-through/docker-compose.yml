@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   nodeA-backend:
-    image: nutsfoundation/nuts-node:master
+    image: "${IMAGE_NODE_A:-nutsfoundation/nuts-node:master}"
     ports:
       - "11323:1323"
     environment:
@@ -17,7 +17,7 @@ services:
     volumes:
       - "./node-A/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro"
   nodeB:
-    image: nutsfoundation/nuts-node:master
+    image: "${IMAGE_NODE_B:-nutsfoundation/nuts-node:master}"
     ports:
       - "21323:1323"
     environment:
