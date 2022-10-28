@@ -19,3 +19,23 @@ To tun the tests you need the following tools:
 ## On your machine
 
 To run the tests execute `run-tests.sh`.
+
+## Testing version compatibility
+
+Sometimes you want to test compatibility between versions. To aid this, every node in this test suite you can specify 2 environment variables to control exact Docker image to use:
+
+- `IMAGE_NODE_A`
+- `IMAGE_NODE_B`
+
+When there are multiple in a test, some will use `IMAGE_NODE_A` and the other `IMAGE_NODE_B`.
+Since tests are asymmetric (the action is only performed from node A to B), you want to run the tests twice with the image variables swapped, e.g.:
+
+```shell
+IMAGE_NODE_A=nutsfoundation/nuts-node:v4.3.0 \
+IMAGE_NODE_B=nutsfoundation/nuts-node:v5.0.0 \
+./run-tests.sh
+
+IMAGE_NODE_A=nutsfoundation/nuts-node:v5.0.0 \
+IMAGE_NODE_B=nutsfoundation/nuts-node:v4.3.0 \
+./run-tests.sh
+```

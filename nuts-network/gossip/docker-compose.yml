@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   nodeA:
-    image: &image nutsfoundation/nuts-node:master
+    image: "${IMAGE_NODE_A:-nutsfoundation/nuts-node:master}"
     environment:
       NUTS_CONFIGFILE: /opt/nuts/nuts.yaml
     ports:
@@ -11,7 +11,7 @@ services:
     healthcheck:
       interval: 1s # Make test run quicker by checking health status more often
   nodeB:
-    image: *image
+    image: "${IMAGE_NODE_B:-nutsfoundation/nuts-node:master}"
     environment:
       NUTS_CONFIGFILE: /opt/nuts/nuts.yaml
     ports:
@@ -21,7 +21,7 @@ services:
     healthcheck:
       interval: 1s # Make test run quicker by checking health status more often
   nodeC:
-    image: *image
+    image: "${IMAGE_NODE_A:-nutsfoundation/nuts-node:master}"
     environment:
       NUTS_CONFIGFILE: /opt/nuts/nuts.yaml
     ports:
@@ -31,7 +31,7 @@ services:
     healthcheck:
       interval: 1s # Make test run quicker by checking health status more often
   nodeD:
-    image: *image
+    image: "${IMAGE_NODE_B:-nutsfoundation/nuts-node:master}"
     environment:
       NUTS_CONFIGFILE: /opt/nuts/nuts.yaml
     ports:
