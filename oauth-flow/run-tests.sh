@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-
-set -e # make script fail if any of the tests returns a non-zero exit code
+set -o errexit
+set -o nounset
+set -o pipefail
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: OAuth flow       !!"
