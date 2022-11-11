@@ -12,12 +12,12 @@ openssl ecparam -genkey -name prime256v1 -noout -out ca.key
 openssl req -x509 -new -nodes -key ca.key -sha256 -days 1825 -out ca.pem -subj "/CN=Root CA"
 
 function generateCertificate {
-  HOST=$1
+  local HOST=$1
   echo Generating key and certificate for $HOST
   openssl ecparam -genkey -name prime256v1 -noout -out $HOST.key
   openssl req -new -key $HOST.key -out $HOST.csr -subj "/CN=${HOST}"
 
-  local_openssl_config="
+  local local_openssl_config="
   authorityKeyIdentifier=keyid,issuer
   basicConstraints=CA:FALSE
   keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment

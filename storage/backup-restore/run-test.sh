@@ -12,7 +12,7 @@ docker compose down
 docker compose rm -f -v
 rm -rf ./node-data/*
 rm -rf ./node-backup/*
-mkdir ./node-data ./node-backup ./node-backup/vcr/ # 'data' dirs will be created with root owner by docker if they do not exit. This creates permission issues on CI.
+mkdir -p ./node-data ./node-backup ./node-backup/vcr/ # 'data' dirs will be created with root owner by docker if they do not exit. This creates permission issues on CI.
 
 echo "------------------------------------"
 echo "Starting Docker containers..."
@@ -44,7 +44,7 @@ docker compose stop
 cp ./node-data/vcr/trusted_issuers.yaml ./node-backup/vcr/
 cp -r ./node-data/crypto ./node-backup
 runOnAlpine "$(pwd):/host/" rm -rf /host/node-data
-mkdir ./node-data
+mkdir -p ./node-data
 # Restart node, assert node data is empty
 echo "Asserting node is empty"
 BACKUP_INTERVAL=0 docker compose up -d

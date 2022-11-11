@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 function waitForDCService {
-  SERVICE_NAME=$1
+  local SERVICE_NAME=$1
   printf "Waiting for docker compose service '%s' to become healthy" $SERVICE_NAME
-  retry=0
-  healthy=0
+  local retry=0
+  local healthy=0
   while [ $retry -lt 30 ]; do
-    status=$(docker inspect -f {{.State.Health.Status}} $(docker compose ps -q $SERVICE_NAME))
+    local status=$(docker inspect -f {{.State.Health.Status}} $(docker compose ps -q $SERVICE_NAME))
 
     if [[ "$status" == "healthy" ]]; then
       healthy=1
@@ -19,23 +19,23 @@ function waitForDCService {
   done
 
   if [ $healthy -eq 0 ]; then
-    echo "FAILED: Service took to long to start"
+    echo "FAILED: Service took to long to start" 1>&2
     exitWithDockerLogs 1
   fi
   echo ""
 }
 
 function waitForTXCount {
-  SERVICE_NAME=$1
-  URL=$2
-  TX_COUNT=$3
-  TIMEOUT=$4
+  local SERVICE_NAME=$1
+  local URL=$2
+  local TX_COUNT=$3
+  local TIMEOUT=$4
   printf "Waiting for service '%s' to contain %s transactions" $SERVICE_NAME $TX_COUNT
-  done=false
-  retry=0
+  local done=false
+  local retry=0
   while [ $retry -lt $TIMEOUT ]; do
 
-    RESPONSE=$(curl -s $URL)
+    local RESPONSE=$(curl -s $URL)
     if echo $RESPONSE | grep -q "transaction_count: $TX_COUNT"; then
       done=true
       break
@@ -47,14 +47,14 @@ function waitForTXCount {
   done
 
   if [ $done == false ]; then
-    printf "FAILED: Service '%s' did not get %d transaction within %d seconds" $SERVICE_NAME $TX_COUNT $TIMEOUT
+    printf "FAILED: Service '%s' did not get %d transaction within %d seconds" $SERVICE_NAME $TX_COUNT $TIMEOUT 1>&2
     exitWithDockerLogs 1
   fi
   echo ""
 }
 
 function exitWithDockerLogs {
-  EXIT_CODE=$1
+  local EXIT_CODE=$1
   docker compose logs
   docker compose stop
   exit $EXIT_CODE
@@ -87,12 +87,12 @@ function setupNode() {
 # assertDiagnostic checks whether a certain string appears on a node's diagnostics page.
 # Args: node HTTP address, string to assert
 function assertDiagnostic() {
-  RESPONSE=$(curl -s "$1/status/diagnostics")
+  local RESPONSE=$(curl -s "$1/status/diagnostics")
   if echo $RESPONSE | grep -q "${2}"; then
     echo "Diagnostics contains '${2}'"
   else
     echo "FAILED: diagnostics does not report '${2}'" 1>&2
-    echo $RESPONSE
+    echo $RESPONSE 1>&2
     exitWithDockerLogs 1
   fi
 }
