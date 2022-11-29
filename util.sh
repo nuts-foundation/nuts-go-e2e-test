@@ -114,9 +114,6 @@ function createAuthCredential() {
     "issuer": "%s",
     "credentialSubject": {
       "id": "%s",
-      "legalBase": {
-        "consentType": "implied"
-      },
       "resources": [],
       "purposeOfUse": "example",
       "subject": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780"
