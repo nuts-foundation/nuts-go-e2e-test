@@ -34,13 +34,13 @@ echo "------------------------------------"
 echo "Creating NodeDIDs..."
 echo "------------------------------------"
 
-didNodeA=$(setupNode "http://localhost:11323" "nodeA:5555")
+didNodeA=$(setupNode "http://localhost:11323" "nodeA.nuts:5555")
 printf "NodeDID for node-a: %s\n" "$didNodeA"
 
 # Wait for the transactions to be processed (will be the root transaction for both nodes)
 sleep 5
 
-didNodeB=$(setupNode "http://localhost:21323" "nodeB:5555")
+didNodeB=$(setupNode "http://localhost:21323" "nodeB.nuts:5555")
 printf "NodeDID for node-b: %s\n" "$didNodeB"
 
 # Wait for the transactions to be processed

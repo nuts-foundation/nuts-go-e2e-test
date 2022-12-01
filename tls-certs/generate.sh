@@ -7,6 +7,7 @@ openssl ecparam -genkey -name prime256v1 -noout -out ca.key
 openssl req -x509 -new -nodes -key ca.key -sha256 -days 1825 -out ca.pem -subj "/CN=Root CA"
 
 function generateCertificate {
+  # all arguments are added to SAN as DNS:<argument>
   HOST=$1
   echo Generating key and certificate for $HOST
   openssl ecparam -genkey -name prime256v1 -noout -out $HOST.key
@@ -19,7 +20,7 @@ function generateCertificate {
   extendedKeyUsage = serverAuth, clientAuth
 
   [alt_names]
-  subjectAltName = DNS:${HOST}
+  subjectAltName = $( set -- "${@/#/DNS:}" ; echo "$*" | sed "s/ /, /g" )
   "
   cat <<< "$local_openssl_config" > node.ext
   openssl x509 -req -in $HOST.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out $HOST-cert.pem -days 825 -sha256 \
@@ -35,9 +36,9 @@ function generateCertificate {
 }
 
 # Generate certificates for nodes
-generateCertificate nodeA
-generateCertificate nodeA-backend
-generateCertificate nodeB
+generateCertificate nodeA nodeA.nuts
+generateCertificate nodeA-backend nodeA-backend.nuts
+generateCertificate nodeB nodeB.nuts
 
 # Cleanup
 rm ca.key
