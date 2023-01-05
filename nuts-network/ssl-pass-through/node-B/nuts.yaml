@@ -5,6 +5,8 @@ auth:
     - dummy
   irma:
     autoupdateschemas: false
+crypto:
+  storage: fs
 network:
   bootstrapnodes: nodeA:5555
   publicaddr: nodeB:5555
