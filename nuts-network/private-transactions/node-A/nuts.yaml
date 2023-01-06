@@ -1,7 +1,7 @@
 verbosity: debug
+strictmode: true
 internalratelimiter: false
 datadir: /opt/nuts/data
-strictmode: true
 http:
   default:
     address: :1323

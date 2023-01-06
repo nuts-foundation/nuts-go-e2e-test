@@ -1,9 +1,12 @@
 verbosity: debug
 auth:
+  publicurl: http://node-A
   contractvalidators:
     - dummy
   irma:
     autoupdateschemas: false
+crypto:
+  storage: fs
 network:
   publicaddr: nodeA:5555
   grpcaddr:	:5555

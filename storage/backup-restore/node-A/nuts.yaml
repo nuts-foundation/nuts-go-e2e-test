@@ -1,4 +1,5 @@
 verbosity: debug
+strictmode: false
 internalratelimiter: false
 auth:
   contractvalidators:
