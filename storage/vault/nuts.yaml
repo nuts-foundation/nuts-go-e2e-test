@@ -10,7 +10,9 @@ auth:
   irma:
     autoupdateschemas: false
 crypto:
-  storage: fs
+  storage: external
+  external:
+    url: http://vault-adapter:8210
 network:
   publicaddr: nodeA:5555
   grpcaddr:	:5555

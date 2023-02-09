@@ -13,7 +13,7 @@ services:
     healthcheck:
       interval: 1s # Make test run quicker by checking health status more often
   vault-adapter:
-    image: nutsfoundation/hashicorp-vault-proxy:latest
+    image: nutsfoundation/hashicorp-vault-proxy:main
     environment:
       VAULT_ADDR: http://vault:8200
       VAULT_TOKEN: root

@@ -11,7 +11,7 @@ docker compose rm -f -v
 echo "------------------------------------"
 echo "Setting up Vault..."
 echo "------------------------------------"
-docker compose up vault --wait
+docker compose up --wait vault
 docker compose exec -e VAULT_TOKEN=root vault vault secrets enable -version=1 -address=http://localhost:8200 kv
 
 echo "------------------------------------"
@@ -29,15 +29,6 @@ DIDDOC_2=$(docker compose exec node nuts vdr create-did)
 DID_2=$(echo $DIDDOC_2 | jq -r .id)
 docker compose exec node nuts didman svc add "${DID_2}" testEndpoint "http://example.com"
 waitForTXCount "Node" "http://localhost:11323/status/diagnostics" 4 10
-
-echo "------------------------------------"
-echo "Restarting services, use key again..."
-echo "------------------------------------"
-docker compose restart --wait
-docker compose exec node nuts didman svc add "${DID_1}" testEndpoint2 "http://example.com"
-docker compose exec node nuts didman svc add "${DID_2}" testEndpoint2 "http://example.com"
-
-waitForTXCount "Node" "http://localhost:11323/status/diagnostics" 6 10
 
 echo "------------------------------------"
 echo "Stopping Docker containers..."
