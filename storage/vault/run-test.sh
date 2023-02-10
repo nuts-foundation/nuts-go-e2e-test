@@ -11,7 +11,7 @@ docker compose rm -f -v
 echo "------------------------------------"
 echo "Setting up Vault..."
 echo "------------------------------------"
-docker compose up --wait vault
+docker compose up --wait vault && sleep 2
 docker compose exec -e VAULT_TOKEN=root vault vault secrets enable -version=1 -address=http://localhost:8200 kv
 
 echo "------------------------------------"
