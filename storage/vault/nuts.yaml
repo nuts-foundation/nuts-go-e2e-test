@@ -12,7 +12,7 @@ auth:
 crypto:
   storage: external
   external:
-    url: http://vault-adapter:8210
+    address: http://vault-adapter:8210
 network:
   publicaddr: nodeA:5555
   grpcaddr:	:5555
