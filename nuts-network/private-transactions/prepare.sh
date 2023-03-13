@@ -37,6 +37,12 @@ echo "------------------------------------"
 didNodeA=$(setupNode "http://localhost:11323" "nodeA:5555")
 printf "NodeDID for node-a: %s\n" "$didNodeA"
 
+# Restart nodeA now that it has >0 did documents with a NutsComm endpoint.
+# This tricks the node into thinking it is not 'new' so it can bypass the service discovery delay for new nodes and immediately setup an authenticated connection.
+# (nodeB will store this delay as a backoff for nodeA, so nodeA needs to discover and connect to nodeB after the restart)
+docker compose restart nodeA
+waitForDCService nodeA
+
 # Wait for the transactions to be processed (will be the root transaction for both nodes)
 sleep 5
 
