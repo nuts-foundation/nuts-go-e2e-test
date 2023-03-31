@@ -22,6 +22,8 @@ To run the tests execute `run-tests.sh`.
 
 ## Testing version compatibility
 
+By default the test are performed on the master build: `nutsfoundation/nuts-node:master`.
+
 Sometimes you want to test compatibility between versions. To aid this, every node in this test suite you can specify 2 environment variables to control exact Docker image to use:
 
 - `IMAGE_NODE_A`
@@ -34,8 +36,14 @@ Since tests are asymmetric (the action is only performed from node A to B), you 
 $ IMAGE_NODE_A=nutsfoundation/nuts-node:v4.3.0 \
 IMAGE_NODE_B=nutsfoundation/nuts-node:v5.0.0 \
 ./run-tests.sh
+```
 
+And than run again with the values swapped:
+```console
 $ IMAGE_NODE_A=nutsfoundation/nuts-node:v5.0.0 \
 IMAGE_NODE_B=nutsfoundation/nuts-node:v4.3.0 \
 ./run-tests.sh
 ```
+
+> **Note**  
+> The tests are updated to the latest node version, they might break when you use an older node version.
