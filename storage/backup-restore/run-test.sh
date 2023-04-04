@@ -21,6 +21,16 @@ echo "------------------------------------"
 echo "Creating DID document and issuing VCs..."
 echo "------------------------------------"
 nodeDID=$(setupNode "http://localhost:11323" nodeA:5555)
+
+echo "------------------------------------"
+echo "Restarting node to set DID..."
+echo "------------------------------------"
+docker compose restart
+waitForDCService nodeA
+
+echo "------------------------------------"
+echo "Issuing private VCs..."
+echo "------------------------------------"
 unrevokedVC_ID=$(createAuthCredential "http://localhost:11323" "$nodeDID" "$nodeDID")
 revokedVC_ID=$(createAuthCredential "http://localhost:11323" "$nodeDID" "$nodeDID")
 revokeCredential "http://localhost:11323" "$revokedVC_ID"
