@@ -19,4 +19,3 @@ network:
   certfile: /opt/nuts/certificate-and-key.pem
   certkeyfile: /opt/nuts/certificate-and-key.pem
   truststorefile: /opt/nuts/truststore.pem
-  nodedid: did:nuts:4wGxmek5AkxhMDbdfLZ24vmt39bi3U92pUqY1SFvdq18
