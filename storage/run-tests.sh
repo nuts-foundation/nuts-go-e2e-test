@@ -13,6 +13,7 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test: Backup/Restore   !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 pushd backup-restore
+./prepare.sh
 ./run-test.sh
 popd
 

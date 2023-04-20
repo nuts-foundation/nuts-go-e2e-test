@@ -102,7 +102,12 @@ function assertDiagnostic() {
 function readDiagnostic() {
   # Given 'uptime'; read diagnostics, find line with 'uptime: ' and remove key + colon, print with stripped spaces
   local result=$(curl -s "$1/status/diagnostics" | grep "${2}:" | sed -e "s/$2://")
-  echo -n "${result//[[:space:]]/}"  # builtin sh on mac does not accept -n option, just prints it instead
+  if [[ $OSTYPE == 'darwin'* ]]; then
+    # builtin sh on mac does not accept -n option, just prints it instead
+    echo "${result//[[:space:]]/}"
+  else
+    echo -n "${result//[[:space:]]/}"
+  fi
 }
 
 # createAuthCredential issues a NutsAuthorizationCredential
@@ -145,4 +150,19 @@ function runOnAlpine() {
   # You can successfully delete the entire folder using:
   # runOnAlpine "$(pwd):/host/" rm -rf /host/data
   docker run --rm -v "$1" alpine "${@:2}"
+}
+
+# finds a node DID in the nuts.yaml on the provided path
+function findNodeDID() {
+  egrep -o 'nodedid:.*' $1 | awk '{print $2}'
+}
+
+# remove any node DID from the nuts.yaml on the provided path
+function removeNodeDID() {
+  if [[ $OSTYPE == 'darwin'* ]]; then
+    # sed works different on MacOS; see https://stackoverflow.com/questions/19456518
+    sed -i '' -e '/nodedid: did:nuts:/d' $1
+  else
+    sed -i '/nodedid: did:nuts:/d' $1
+  fi
 }
