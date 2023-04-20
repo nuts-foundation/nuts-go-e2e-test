@@ -11,12 +11,8 @@ echo "------------------------------------"
 docker compose down
 docker compose rm -f -v
 rm -rf ./node-*/data
-if [[ $OSTYPE == 'darwin'* ]]; then
-  # sed works different on MacOS; see https://stackoverflow.com/questions/19456518
-  sed -i '' -e '/nodedid: did:nuts:/d' ./node-*/nuts.yaml
-else
-  sed -i '/nodedid: did:nuts:/d' ./node-*/nuts.yaml
-fi
+removeNodeDID ./node-A/nuts.yaml
+removeNodeDID ./node-B/nuts.yaml
 
 echo "------------------------------------"
 echo "Starting Docker containers..."

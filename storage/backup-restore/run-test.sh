@@ -3,34 +3,19 @@
 source ../../util.sh
 
 echo "------------------------------------"
-echo "Cleaning up running Docker containers and volumes, and key material..."
-echo "------------------------------------"
-docker compose down
-docker compose rm -f -v
-rm -rf ./node-data/*
-rm -rf ./node-backup/*
-mkdir ./node-data ./node-backup ./node-backup/vcr/ # 'data' dirs will be created with root owner by docker if they do not exit. This creates permission issues on CI.
-
-echo "------------------------------------"
 echo "Starting Docker containers..."
 echo "------------------------------------"
 docker compose up -d
-waitForDCService nodeA
 
-echo "------------------------------------"
-echo "Creating DID document and issuing VCs..."
-echo "------------------------------------"
-nodeDID=$(setupNode "http://localhost:11323" nodeA:5555)
-
-echo "------------------------------------"
-echo "Restarting node to set DID..."
-echo "------------------------------------"
-docker compose restart
 waitForDCService nodeA
 
 echo "------------------------------------"
 echo "Issuing private VCs..."
 echo "------------------------------------"
+
+nodeDID=$(findNodeDID "node-A/nuts.yaml")
+printf "NodeDID for node A: %s\n" "$nodeDID"
+
 unrevokedVC_ID=$(createAuthCredential "http://localhost:11323" "$nodeDID" "$nodeDID")
 revokedVC_ID=$(createAuthCredential "http://localhost:11323" "$nodeDID" "$nodeDID")
 revokeCredential "http://localhost:11323" "$revokedVC_ID"
@@ -56,7 +41,6 @@ mkdir ./node-data
 echo "Asserting node is empty"
 BACKUP_INTERVAL=0 docker compose up -d
 waitForDCService nodeA
-assertDiagnostic "http://localhost:11323" "node_did: \"\""
 assertDiagnostic "http://localhost:11323" "transaction_count: 0"
 assertDiagnostic "http://localhost:11323" "credential_count: 0"
 # Restore data and rebuild
