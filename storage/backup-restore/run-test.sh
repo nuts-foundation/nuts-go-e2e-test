@@ -37,6 +37,7 @@ cp ./node-data/vcr/trusted_issuers.yaml ./node-backup/vcr/
 cp -r ./node-data/crypto ./node-backup
 runOnAlpine "$(pwd):/host/" rm -rf /host/node-data
 mkdir ./node-data
+removeNodeDID ./node-A/nuts.yaml
 # Restart node, assert node data is empty
 echo "Asserting node is empty"
 BACKUP_INTERVAL=0 docker compose up -d
