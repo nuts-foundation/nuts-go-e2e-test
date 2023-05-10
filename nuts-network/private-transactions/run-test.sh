@@ -85,3 +85,7 @@ echo "------------------------------------"
 echo "Stopping Docker containers..."
 echo "------------------------------------"
 docker compose stop
+
+# cleanup: remove nodeDID from configs
+removeNodeDID ./node-A/nuts.yaml
+removeNodeDID ./node-B/nuts.yaml
