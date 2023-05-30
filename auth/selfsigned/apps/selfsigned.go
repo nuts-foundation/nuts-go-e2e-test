@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/chromedp/chromedp"
-	authAPI "github.com/nuts-foundation/nuts-node/auth/api/v1/client"
+	authAPI "github.com/nuts-foundation/nuts-node/auth/api/auth_v1/client"
 	"github.com/nuts-foundation/nuts-node/core"
 	"github.com/rs/zerolog/log"
 )
@@ -71,6 +71,32 @@ func (s SelfSigned) GetSessionStatus(sessionID string) (string, *authAPI.Verifia
 		return "", nil, fmt.Errorf("could not get session status: %s", string(response.Body))
 	}
 	return response.JSON200.Status, response.JSON200.VerifiablePresentation, nil
+}
+
+func (s SelfSigned) RequestAccessToken(organizationDID string, presentation *authAPI.VerifiablePresentation) (*authAPI.TokenIntrospectionResponse, error) {
+	authClient, _ := authAPI.NewClient(s.URL)
+	accessTokenResponse, err := authClient.RequestAccessToken(s.Context, authAPI.RequestAccessTokenJSONRequestBody{
+		Authorizer: organizationDID,
+		Identity:   presentation,
+		Requester:  organizationDID,
+		Service:    "test",
+	})
+	if err != nil {
+		return nil, err
+	}
+	response, err := authAPI.ParseRequestAccessTokenResponse(accessTokenResponse)
+
+	introspectionResponse, err := authClient.IntrospectAccessTokenWithFormdataBody(s.Context, authAPI.IntrospectAccessTokenFormdataRequestBody{
+		Token: response.JSON200.AccessToken,
+	})
+	if err != nil {
+		return nil, err
+	}
+	introspectAccessTokenResponse, err := authAPI.ParseIntrospectAccessTokenResponse(introspectionResponse)
+	if err != nil {
+		return nil, err
+	}
+	return introspectAccessTokenResponse.JSON200, nil
 }
 
 func (s SelfSigned) startSession(organizationDID string, employee EmployeeInfo) (string, string, error) {

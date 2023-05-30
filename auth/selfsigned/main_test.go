@@ -8,6 +8,7 @@ import (
 	didAPI "github.com/nuts-foundation/nuts-node/vdr/api/v1"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
@@ -15,6 +16,7 @@ import (
 )
 
 func Test_LoginWithSelfSignedMeans(t *testing.T) {
+	const nodeURL = "http://localhost:1323"
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
@@ -34,7 +36,7 @@ func Test_LoginWithSelfSignedMeans(t *testing.T) {
 	require.NoError(t, err)
 
 	selfSigned := apps.SelfSigned{
-		URL:     "http://localhost:1323",
+		URL:     nodeURL,
 		Context: ctx,
 	}
 	roleName := "Soulpeeker"
@@ -64,6 +66,15 @@ func Test_LoginWithSelfSignedMeans(t *testing.T) {
 	require.Equal(t, organization.ID.String(), presentation.VerifiableCredential[0].Issuer.String())
 	vpData, _ := presentation.MarshalJSON()
 	log.Info().Msgf("VP: %s", string(vpData))
+
+	// Now request an access token
+	accessToken, err := selfSigned.RequestAccessToken(organization.ID.String(), presentation)
+	require.NoError(t, err)
+	assert.Equal(t, "", accessToken.Service)
+	assert.Equal(t, "", accessToken.FamilyName)
+	assert.Equal(t, "", accessToken.Initials)
+	assert.Equal(t, "", accessToken.``)
+	assert.Equal(t, "", accessToken.)
 
 	if os.Getenv("KEEP_BROWSER_OPEN") == "true" {
 		timeout := time.Minute
