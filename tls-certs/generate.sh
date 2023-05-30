@@ -4,7 +4,7 @@ DIRECTORY=./
 
 # Generate CA
 openssl ecparam -genkey -name prime256v1 -noout -out ca.key
-openssl req -x509 -new -nodes -key ca.key -sha256 -days 1825 -out ca.pem -subj "/CN=Root CA"
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 8825 -out ca.pem -subj "/CN=Root CA"
 
 function generateCertificate {
   HOST=$1
@@ -22,7 +22,7 @@ function generateCertificate {
   subjectAltName = DNS:${HOST}
   "
   cat <<< "$local_openssl_config" > node.ext
-  openssl x509 -req -in $HOST.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out $HOST-cert.pem -days 825 -sha256 \
+  openssl x509 -req -in $HOST.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out $HOST-cert.pem -days 7825 -sha256 \
     -extfile node.ext \
     -extensions alt_names
 
