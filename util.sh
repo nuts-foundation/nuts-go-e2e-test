@@ -156,24 +156,6 @@ function createAuthCredential() {
   }' "$2" "$3" | curl -s -X POST "$1/internal/vcr/v2/issuer/vc" -H "Content-Type: application/json" --data-binary @- | jq ".id" | sed "s/\"//g"
 }
 
-# createNutsOrgCredential issues a NutsOrganizationCredential
-# Args:    issuing node HTTP address, issuer DID, subject DID
-# Returns: the VC ID
-function createNutsOrgCredential() {
-  printf '{
-    "type": "NutsOrganizationCredential",
-    "issuer": "%s",
-    "credentialSubject": {
-      "id": "%s",
-      "organization": {
-        "name": "Caresoft B.V.",
-        "city": "Caretown"
-      }
-    },
-    "visibility": "public"
-  }' "$2" "$3" | curl -s -X POST "$1/internal/vcr/v2/issuer/vc" -H "Content-Type: application/json" --data-binary @- | jq ".id" | sed "s/\"//g"
-}
-
 # registerStringService registers a service on a DID document, with a string as serviceEndpoint
 # Args:   issuing node HTTP address, DID, service type, service endpoint
 function registerStringService() {

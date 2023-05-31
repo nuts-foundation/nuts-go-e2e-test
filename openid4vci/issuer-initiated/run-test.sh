@@ -26,16 +26,12 @@ echo "------------------------------------"
 
 didNodeA=$(setupNode "http://localhost:11323" "nodeA:5555")
 printf "NodeDID for node-a: %s\n" "$didNodeA"
-# TODO: Not yet required, and not trusted by the other node
-# createNutsOrgCredential "http://localhost:11323" "$didNodeA" "$didNodeA"
 
 # Wait for node B to receive the TXs created by node A, indicating the connection is working
 waitForTXCount "NodeB" "http://localhost:21323/status/diagnostics" 2 10
 
 didNodeB=$(setupNode "http://localhost:21323" "nodeB:5555")
 printf "NodeDID for node-b: %s\n" "$didNodeB"
-# TODO: Not yet required, and not trusted by the other node
-# createNutsOrgCredential "http://localhost:21323" "$didNodeB" "$didNodeB"
 registerStringService "http://localhost:21323" "$didNodeB" "oidc4vci-wallet-metadata" "http://nodeB:1323/identity/$didNodeB/.well-known/openid-credential-wallet"
 
 # Wait for node A to receive all TXs created by node B
