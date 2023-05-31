@@ -4,7 +4,8 @@ import (
 	"github.com/nuts-foundation/go-did/did"
 	"github.com/nuts-foundation/nuts-go-e2e-test/apps"
 	"github.com/nuts-foundation/nuts-go-e2e-test/browser"
-	vcrAPI "github.com/nuts-foundation/nuts-node/vcr/api/v2"
+	didmanAPI "github.com/nuts-foundation/nuts-node/didman/api/v1"
+	vcrAPI "github.com/nuts-foundation/nuts-node/vcr/api/vcr/v2"
 	didAPI "github.com/nuts-foundation/nuts-node/vdr/api/v1"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -17,6 +18,7 @@ import (
 
 func Test_LoginWithSelfSignedMeans(t *testing.T) {
 	const nodeURL = "http://localhost:1323"
+	const purposeOfUse = "zorgtoepassing"
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
@@ -31,6 +33,8 @@ func Test_LoginWithSelfSignedMeans(t *testing.T) {
 	}()
 
 	organization, err := createDID()
+	require.NoError(t, err)
+	err = registerCompoundService(organization.ID, purposeOfUse)
 	require.NoError(t, err)
 	err = issueOrganizationCredential(organization)
 	require.NoError(t, err)
@@ -68,13 +72,14 @@ func Test_LoginWithSelfSignedMeans(t *testing.T) {
 	log.Info().Msgf("VP: %s", string(vpData))
 
 	// Now request an access token
-	accessToken, err := selfSigned.RequestAccessToken(organization.ID.String(), presentation)
+	accessToken, err := selfSigned.RequestAccessToken(organization.ID.String(), purposeOfUse, presentation)
 	require.NoError(t, err)
-	assert.Equal(t, "", accessToken.Service)
-	assert.Equal(t, "", accessToken.FamilyName)
-	assert.Equal(t, "", accessToken.Initials)
-	assert.Equal(t, "", accessToken.``)
-	assert.Equal(t, "", accessToken.)
+	assert.Equal(t, "zorgtoepassing", *accessToken.Service)
+	assert.Equal(t, "J", *accessToken.Initials)
+	assert.Equal(t, "Doe", *accessToken.FamilyName)
+	assert.Equal(t, "Soulpeeker", *accessToken.UserRole)
+	assert.Equal(t, "jdoe@example.com", *accessToken.Username)
+	assert.Equal(t, "low", string(*accessToken.AssuranceLevel))
 
 	if os.Getenv("KEEP_BROWSER_OPEN") == "true" {
 		timeout := time.Minute
@@ -97,6 +102,14 @@ func issueOrganizationCredential(organization *did.Document) error {
 			},
 		},
 		Visibility: &visibility,
+	})
+	return err
+}
+
+func registerCompoundService(id did.DID, compoundServiceType string) error {
+	client := didmanAPI.HTTPClient{ClientConfig: apps.NodeClientConfig}
+	_, err := client.AddCompoundService(id.String(), compoundServiceType, map[string]string{
+		"oauth": apps.NodeClientConfig.Address + "/n2n/auth/v1/accesstoken",
 	})
 	return err
 }

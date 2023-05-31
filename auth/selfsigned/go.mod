@@ -5,9 +5,9 @@ go 1.18
 require (
 	github.com/chromedp/chromedp v0.8.1
 	github.com/nuts-foundation/go-did v0.5.1
-	github.com/nuts-foundation/nuts-node v1.0.1-0.20230508074804-e0522231227c
+	github.com/nuts-foundation/nuts-node v1.0.1-0.20230531105115-1053bdff68d0
 	github.com/rs/zerolog v1.26.1
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.4
 )
 
 require (
@@ -38,6 +38,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.7 // indirect
 	github.com/go-co-op/gocron v1.14.0 // indirect
 	github.com/go-errors/errors v1.4.2 // indirect
+	github.com/go-jose/go-jose/v3 v3.0.0 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-redsync/redsync/v4 v4.8.1 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
@@ -60,12 +61,12 @@ require (
 	github.com/hashicorp/go-secure-stdlib/strutil v0.1.2 // indirect
 	github.com/hashicorp/go-sockaddr v1.0.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hashicorp/vault/api v1.9.1 // indirect
+	github.com/hashicorp/vault/api v1.9.2 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jinzhu/gorm v1.9.16 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/klauspost/compress v1.16.4 // indirect
+	github.com/klauspost/compress v1.16.5 // indirect
 	github.com/knadh/koanf v1.5.0 // indirect
 	github.com/labstack/echo/v4 v4.10.2 // indirect
 	github.com/labstack/gommon v0.4.0 // indirect
@@ -78,9 +79,9 @@ require (
 	github.com/lib/pq v1.10.6 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.17 // indirect
+	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
-	github.com/mdp/qrterminal/v3 v3.0.0 // indirect
+	github.com/mdp/qrterminal/v3 v3.1.1 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1 // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
@@ -92,8 +93,8 @@ require (
 	github.com/mr-tron/base58 v1.1.3 // indirect
 	github.com/multiformats/go-multihash v0.0.11 // indirect
 	github.com/nats-io/jwt/v2 v2.4.1 // indirect
-	github.com/nats-io/nats-server/v2 v2.9.16 // indirect
-	github.com/nats-io/nats.go v1.25.0 // indirect
+	github.com/nats-io/nats-server/v2 v2.9.17 // indirect
+	github.com/nats-io/nats.go v1.26.0 // indirect
 	github.com/nats-io/nkeys v0.4.4 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/nightlyone/lockfile v1.0.0 // indirect
@@ -108,17 +109,17 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
 	github.com/privacybydesign/gabi v0.0.0-20221012093643-8e978bfbb252 // indirect
-	github.com/privacybydesign/irmago v0.12.2 // indirect
+	github.com/privacybydesign/irmago v0.12.5 // indirect
 	github.com/prometheus/client_golang v1.15.1 // indirect
 	github.com/prometheus/client_model v0.4.0 // indirect
 	github.com/prometheus/common v0.42.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
-	github.com/redis/go-redis/v9 v9.0.4 // indirect
+	github.com/redis/go-redis/v9 v9.0.5 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/shengdoushi/base58 v1.0.0 // indirect
 	github.com/sietseringers/go-sse v0.0.0-20200801161811-e2cf2c63ca50 // indirect
-	github.com/sirupsen/logrus v1.9.0 // indirect
+	github.com/sirupsen/logrus v1.9.2 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/cobra v1.7.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
@@ -134,11 +135,11 @@ require (
 	github.com/x-cray/logrus-prefixed-formatter v0.5.2 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
-	golang.org/x/crypto v0.8.0 // indirect
-	golang.org/x/net v0.9.0 // indirect
+	golang.org/x/crypto v0.9.0 // indirect
+	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
-	golang.org/x/term v0.7.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
+	golang.org/x/term v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4 // indirect

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/chromedp/chromedp"
-	authAPI "github.com/nuts-foundation/nuts-node/auth/api/auth_v1/client"
+	authAPI "github.com/nuts-foundation/nuts-node/auth/api/auth/v1/client"
 	"github.com/nuts-foundation/nuts-node/core"
 	"github.com/rs/zerolog/log"
 )
@@ -73,19 +73,21 @@ func (s SelfSigned) GetSessionStatus(sessionID string) (string, *authAPI.Verifia
 	return response.JSON200.Status, response.JSON200.VerifiablePresentation, nil
 }
 
-func (s SelfSigned) RequestAccessToken(organizationDID string, presentation *authAPI.VerifiablePresentation) (*authAPI.TokenIntrospectionResponse, error) {
+func (s SelfSigned) RequestAccessToken(organizationDID string, purposeOfUse string, presentation *authAPI.VerifiablePresentation) (*authAPI.TokenIntrospectionResponse, error) {
 	authClient, _ := authAPI.NewClient(s.URL)
 	accessTokenResponse, err := authClient.RequestAccessToken(s.Context, authAPI.RequestAccessTokenJSONRequestBody{
 		Authorizer: organizationDID,
 		Identity:   presentation,
 		Requester:  organizationDID,
-		Service:    "test",
+		Service:    purposeOfUse,
 	})
 	if err != nil {
 		return nil, err
 	}
 	response, err := authAPI.ParseRequestAccessTokenResponse(accessTokenResponse)
-
+	if err != nil {
+		return nil, err
+	}
 	introspectionResponse, err := authClient.IntrospectAccessTokenWithFormdataBody(s.Context, authAPI.IntrospectAccessTokenFormdataRequestBody{
 		Token: response.JSON200.AccessToken,
 	})
@@ -119,7 +121,7 @@ func (s SelfSigned) startSession(organizationDID string, employee EmployeeInfo) 
 	}
 
 	signSessionHTTPResponse, err := authClient.CreateSignSession(s.Context, authAPI.CreateSignSessionJSONRequestBody{
-		Means: "selfsigned",
+		Means: "employeeid",
 		Params: map[string]interface{}{
 			"employer": organizationDID,
 			"employee": employee,
