@@ -22,7 +22,7 @@ func Test_LoginWithSelfSignedMeans(t *testing.T) {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
-	ctx, cancel := browser.NewChrome(false)
+	ctx, cancel := browser.NewChrome(os.Getenv("SHOW_BROWSER") != "true")
 	defer func() {
 		if t.Failed() {
 			duration := 5 * time.Second
