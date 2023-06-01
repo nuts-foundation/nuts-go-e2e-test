@@ -30,6 +30,13 @@ pushd openid4vci
 ./run-tests.sh
 popd
 
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!! Running test suite: Auth !!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+pushd auth
+./run-tests.sh
+popd
+
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! Running test suite: Sysadmin Operations !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
