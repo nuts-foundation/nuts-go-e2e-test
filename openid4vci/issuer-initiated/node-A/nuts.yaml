@@ -5,8 +5,12 @@ datadir: /opt/nuts/data
 http:
   default:
     address: :1323
+  alt:
+    n2n:
+      address: :443
+      tls: server-client
 auth:
-  publicurl: http://nodeA:1323
+  publicurl: https://nodeA:1323
   contractvalidators:
     - dummy
   irma:
@@ -17,7 +21,7 @@ vcr:
   overrideissueallpublic: false
   oidc4vci:
     enabled: true
-    url: http://nodeA:1323
+    url: https://nodeA:443
 tls:
   truststorefile: /opt/nuts/truststore.pem
   certfile: /opt/nuts/certificate-and-key.pem

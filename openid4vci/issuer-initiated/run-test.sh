@@ -32,7 +32,7 @@ waitForTXCount "NodeB" "http://localhost:21323/status/diagnostics" 2 10
 
 didNodeB=$(setupNode "http://localhost:21323" "nodeB:5555")
 printf "NodeDID for node-b: %s\n" "$didNodeB"
-registerStringService "http://localhost:21323" "$didNodeB" "oidc4vci-wallet-metadata" "http://nodeB:1323/identity/$didNodeB/.well-known/openid-credential-wallet"
+registerStringService "http://localhost:21323" "$didNodeB" "oidc4vci-wallet-metadata" "https://nodeB:443/n2n/identity/$didNodeB/.well-known/openid-credential-wallet"
 
 # Wait for node A to receive all TXs created by node B
 waitForTXCount "NodeA" "http://localhost:11323/status/diagnostics" 5 10
