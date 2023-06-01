@@ -53,6 +53,35 @@ function waitForTXCount {
   echo ""
 }
 
+# waitForDCService waits for a Nuts node's diagnostic to display a certain value for a given key
+# Args:    service name, key to check, expected value
+function waitForDiagnostic {
+  SERVICE_NAME=$1
+  KEY=$2
+  VALUE=$3
+  TIMEOUT=10
+  printf "Waiting for service '%s' diagnostic (%s: %s)" $SERVICE_NAME $KEY $VALUE
+  done=false
+  retry=0
+  while [ $retry -lt $TIMEOUT ]; do
+    RESPONSE=$(docker compose exec $SERVICE_NAME nuts status)
+    if echo $RESPONSE | grep -q "${KEY}: ${VALUE}"; then
+      done=true
+      break
+    fi
+
+    printf "."
+    sleep 1
+    retry=$[$retry+1]
+  done
+
+  if [ $done == false ]; then
+    echo "FAILED"
+    exitWithDockerLogs 1
+  fi
+  echo ""
+}
+
 function exitWithDockerLogs {
   EXIT_CODE=$1
   docker compose logs
@@ -125,6 +154,15 @@ function createAuthCredential() {
     },
    "visibility": "private"
   }' "$2" "$3" | curl -s -X POST "$1/internal/vcr/v2/issuer/vc" -H "Content-Type: application/json" --data-binary @- | jq ".id" | sed "s/\"//g"
+}
+
+# registerStringService registers a service on a DID document, with a string as serviceEndpoint
+# Args:   issuing node HTTP address, DID, service type, service endpoint
+function registerStringService() {
+    printf '{
+      "type": "%s",
+      "endpoint": "%s"
+    }' "$3" "$4" | curl -s -X POST "$1/internal/didman/v1/did/$2/endpoint" -H "Content-Type: application/json" --data-binary @- > /dev/null
 }
 
 # readCredential resolves a VC
