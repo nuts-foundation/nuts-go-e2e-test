@@ -10,7 +10,7 @@ http:
       address: :443
       tls: server-client
 auth:
-  publicurl: https://nodeB:1323
+  publicurl: http://nodeB:1323
   contractvalidators:
     - dummy
   irma:
@@ -21,7 +21,7 @@ vcr:
   overrideissueallpublic: false
   oidc4vci:
     enabled: true
-    url: https://nodeB:443
+    url: https://nodeB
 tls:
   truststorefile: /opt/nuts/truststore.pem
   certfile: /opt/nuts/certificate-and-key.pem
