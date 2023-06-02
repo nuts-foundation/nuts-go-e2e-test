@@ -70,8 +70,6 @@ func Test_LoginWithSelfSignedMeans(t *testing.T) {
 	require.Equal(t, "completed", status)
 	require.Equal(t, "NutsSelfSignedPresentation", presentation.Type[1].String())
 	require.Equal(t, organization.ID.String(), presentation.VerifiableCredential[0].Issuer.String())
-	vpData, _ := presentation.MarshalJSON()
-	log.Info().Msgf("VP: %s", string(vpData))
 
 	// Now request an access token
 	accessToken, err := selfSigned.RequestAccessToken(organization.ID.String(), purposeOfUse, presentation)
