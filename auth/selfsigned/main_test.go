@@ -41,9 +41,8 @@ func Test_LoginWithSelfSignedMeans(t *testing.T) {
 	require.NoError(t, err)
 
 	selfSigned := apps.SelfSigned{
-		BrowserURL: "http://node:1323",
-		APIURL:     "http://localhost:1323",
-		Context:    ctx,
+		URL:     "http://localhost:1323",
+		Context: ctx,
 	}
 	roleName := "Soulpeeker"
 	employeeInfo := apps.EmployeeInfo{
