@@ -17,15 +17,16 @@ import (
 )
 
 func Test_LoginWithSelfSignedMeans(t *testing.T) {
-	const nodeURL = "http://localhost:1323"
+
 	const purposeOfUse = "zorgtoepassing"
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 
-	ctx, cancel := browser.NewChrome(os.Getenv("SHOW_BROWSER") != "true")
+	headless := os.Getenv("SHOW_BROWSER") != "true"
+	ctx, cancel := browser.NewChrome(headless)
 	defer func() {
-		if t.Failed() {
-			duration := 5 * time.Second
+		if t.Failed() && !headless {
+			duration := 10 * time.Second
 			log.Info().Msgf("Test failed, keeping browser open for %s", duration)
 			time.Sleep(duration)
 		}
@@ -40,7 +41,7 @@ func Test_LoginWithSelfSignedMeans(t *testing.T) {
 	require.NoError(t, err)
 
 	selfSigned := apps.SelfSigned{
-		URL:     nodeURL,
+		URL:     "http://localhost:1323",
 		Context: ctx,
 	}
 	roleName := "Soulpeeker"
@@ -68,8 +69,6 @@ func Test_LoginWithSelfSignedMeans(t *testing.T) {
 	require.Equal(t, "completed", status)
 	require.Equal(t, "NutsSelfSignedPresentation", presentation.Type[1].String())
 	require.Equal(t, organization.ID.String(), presentation.VerifiableCredential[0].Issuer.String())
-	vpData, _ := presentation.MarshalJSON()
-	log.Info().Msgf("VP: %s", string(vpData))
 
 	// Now request an access token
 	accessToken, err := selfSigned.RequestAccessToken(organization.ID.String(), purposeOfUse, presentation)
