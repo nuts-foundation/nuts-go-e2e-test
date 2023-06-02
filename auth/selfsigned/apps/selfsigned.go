@@ -19,8 +19,9 @@ type EmployeeInfo struct {
 }
 
 type SelfSigned struct {
-	URL     string
-	Context context.Context
+	APIURL     string
+	BrowserURL string
+	Context    context.Context
 }
 
 type SelfSignedSession struct {
@@ -74,7 +75,7 @@ func (s SelfSigned) GetSessionStatus(sessionID string) (string, *authAPI.Verifia
 }
 
 func (s SelfSigned) RequestAccessToken(organizationDID string, purposeOfUse string, presentation *authAPI.VerifiablePresentation) (*authAPI.TokenIntrospectionResponse, error) {
-	authClient, _ := authAPI.NewClient(s.URL)
+	authClient, _ := authAPI.NewClient(s.APIURL)
 	accessTokenResponse, err := authClient.RequestAccessToken(s.Context, authAPI.RequestAccessTokenJSONRequestBody{
 		Authorizer: organizationDID,
 		Identity:   presentation,
